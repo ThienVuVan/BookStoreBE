@@ -1,0 +1,1 @@
+package com.bookstore.modules.auth.response;
