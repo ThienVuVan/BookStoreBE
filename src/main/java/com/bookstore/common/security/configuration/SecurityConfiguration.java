@@ -84,7 +84,7 @@ public class SecurityConfiguration {
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         /* Handle Authentication Exception */
-        http.exceptionHandling(exception -> exception.authenticationEntryPoint(authenticationEntryPoint()));
+        //http.exceptionHandling(exception -> exception.authenticationEntryPoint(authenticationEntryPoint()));
         /* Build */
         return http.build();
     }

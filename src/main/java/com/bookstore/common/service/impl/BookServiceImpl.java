@@ -1,20 +1,26 @@
 package com.bookstore.common.service.impl;
 
+import com.bookstore.common.dto.BookDto;
 import com.bookstore.common.entity.Book;
 import com.bookstore.common.repository.BookRepository;
 import com.bookstore.common.service.BookService;
+import com.bookstore.modules.book.dto.BookMapper;
 import lombok.RequiredArgsConstructor;
+import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class BookServiceImpl implements BookService {
     private final BookRepository bookRepository;
+    private BookMapper bookMapper = Mappers.getMapper(BookMapper.class);
     @Override
-    public List<Book> retrieveAllBooks() {
-        return bookRepository.findAll();
+    public List<BookDto> retrieveAllBooks() {
+        return bookRepository.findAll().stream().map(book -> bookMapper.BookToBookDto(book))
+                .collect(Collectors.toList());
     }
     @Override
     public Book saveBook(Book book) {

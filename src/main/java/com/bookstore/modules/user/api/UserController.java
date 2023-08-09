@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -21,7 +23,6 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
-    private final PasswordEncoder passwordEncoder;
 
     @Operation(summary = "Retrieve All Users", description = "Retrieve All Users")
     @SecurityRequirement(name = "Bearer Authentication")
@@ -33,33 +34,17 @@ public class UserController {
     @Operation(summary = "Post A New User", description = "Post A New User")
     @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping(value = {URI.USERS})
-    public ResponseEntity CreateNewUser(@Valid @RequestBody User user, BindingResult bindingResult){
-        if(bindingResult.hasErrors()){
-            Map<String, Object> errors = new HashMap<>();
-            bindingResult.getFieldErrors().forEach(error -> errors.put(error.getField(),  error.getDefaultMessage()));
-            return new ResponseEntity(errors,HttpStatus.BAD_REQUEST);
-        }
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+    public ResponseEntity<?> CreateNewUser(@Valid @RequestBody User user){
         userService.saveUser(user);
         return new ResponseEntity(HttpStatus.CREATED);
     }
     @PutMapping(value = {URI.USERS})
-    public ResponseEntity<Object> UpdateUser(@Valid @RequestBody User user, BindingResult bindingResult){
-        if(bindingResult.hasErrors()){
-            Map<String, Object> errors = new HashMap<>();
-            bindingResult.getFieldErrors().forEach(error -> errors.put(error.getField(),  error.getDefaultMessage()));
-            return new ResponseEntity(errors,HttpStatus.BAD_REQUEST);
-        }
+    public ResponseEntity<Object> UpdateUser(@Valid @RequestBody User user){
         userService.updateUser(user);
         return new ResponseEntity(HttpStatus.OK);
     }
     @DeleteMapping(value = {URI.USERS})
-    public ResponseEntity<Object> DeleteUser(@Valid @RequestBody User user, BindingResult bindingResult){
-        if(bindingResult.hasErrors()){
-            Map<String, Object> errors = new HashMap<>();
-            bindingResult.getFieldErrors().forEach(error -> errors.put(error.getField(),  error.getDefaultMessage()));
-            return new ResponseEntity(errors,HttpStatus.BAD_REQUEST);
-        }
+    public ResponseEntity<Object> DeleteUser(@Valid @RequestBody User user){
         userService.deleteUser(user);
         return new ResponseEntity(HttpStatus.OK);
     }
