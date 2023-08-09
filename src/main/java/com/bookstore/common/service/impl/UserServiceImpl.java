@@ -46,4 +46,19 @@ public class UserServiceImpl implements UserService {
     public Optional<User> retrieveByUserName(String username) {
         return userRepository.findByUsername(username);
     }
+
+    @Override
+    public Boolean isExistUserName(String username) {
+        return userRepository.existsUserByUsername(username);
+    }
+
+    @Override
+    public Boolean isExistEmail(String email) {
+        return userRepository.existsUserByEmail(email);
+    }
+
+    @Override
+    public Boolean isExistPhoneNumber(String phoneNumber) {
+        return userRepository.existsUserByPhoneNumber(phoneNumber);
+    }
 }

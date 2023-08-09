@@ -3,7 +3,6 @@ package com.bookstore.common.security.configuration;
 import com.bookstore.common.enums.URI;
 import com.bookstore.common.security.exception.AuthenticationEntryPointImpl;
 import com.bookstore.common.security.filter.JWTAuthenticationFilter;
-import com.bookstore.common.security.filter.JWTLoginFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,7 +20,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint;
 
 import java.util.Collections;
 
@@ -60,7 +58,7 @@ public class SecurityConfiguration {
         http.authorizeHttpRequests(request -> request
                 .requestMatchers(HttpMethod.GET,URI.USERS).hasAnyRole("ADMIN")
                 .requestMatchers("/swagger-ui/**", "/swagger-resources/**", "/v3/api-docs/**").permitAll()
-                .requestMatchers(HttpMethod.POST,URI.USERS_LOGIN).permitAll()
+                .requestMatchers(HttpMethod.POST,URI.USERS_LOGIN, URI.USERS_SIGNUP).permitAll()
                 .anyRequest().authenticated()
         );
 
@@ -84,7 +82,7 @@ public class SecurityConfiguration {
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         /* Handle Authentication Exception */
-        //http.exceptionHandling(exception -> exception.authenticationEntryPoint(authenticationEntryPoint()));
+        http.exceptionHandling(exception -> exception.authenticationEntryPoint(authenticationEntryPoint()));
         /* Build */
         return http.build();
     }

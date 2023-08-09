@@ -28,10 +28,11 @@ public class OrderItem {
     @JoinColumn(name = "book_id")
     private Book book;
 
-    @Column(name = "quantity")
+
     @NotNull
-    @Range(max = 1000, min = 1)
     @PositiveOrZero
+    @Range(max = 1000, min = 1)
+    @Column(name = "quantity")
     private Integer quantity;
 
     /* <-------------- Entity Method ----------------> */

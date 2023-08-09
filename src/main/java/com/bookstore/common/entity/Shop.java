@@ -18,25 +18,26 @@ public class Shop {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "shop_logo")
     @NotNull
     @Lob
+    @Column(name = "shop_logo")
     private Byte[] shopLogo;
 
-    @Column(name = "shop_name")
+
     @NotBlank
-    @Length(max = 50, min = 5)
+    @Length(min = 2)
+    @Column(name = "shop_name")
     private String shopName;
 
     @Column(name = "shop_address")
     private String shopAddress;
 
-    @Column(name = "contact_phone")
     @Phone
+    @Column(name = "contact_phone")
     private String contactPhone;
 
-    @Column(name = "contact_email")
     @Email
+    @Column(name = "contact_email")
     private String contactEmail;
 
     /* <------------------ Entity Method -------------------> */

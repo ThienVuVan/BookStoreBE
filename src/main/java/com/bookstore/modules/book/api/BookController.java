@@ -22,21 +22,24 @@ public class BookController {
     @Operation(summary = "Retrieve All Books", description = "Retrieve All Books")
     @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping(value = {URI.BOOKS})
-    public ResponseEntity<List<?>> RetrieveAllBook(){
+    public ResponseEntity<?> RetrieveAllBook(){
         return new ResponseEntity<>(bookService.retrieveAllBooks(), HttpStatus.OK);
     }
+
+    @Operation(summary = "Post a new book", description = "Post a new book")
+    @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping(value = {URI.BOOKS})
-    public ResponseEntity CreateNewBook(@Valid @RequestBody Book book){
+    public ResponseEntity<?> CreateNewBook(@Valid @RequestBody Book book){
         bookService.saveBook(book);
         return new ResponseEntity(HttpStatus.CREATED);
     }
     @PutMapping(value = {URI.BOOKS})
-    public ResponseEntity UpdateUser(@Valid @RequestBody Book book){
+    public ResponseEntity<?> UpdateUser(@Valid @RequestBody Book book){
         bookService.updateBook(book);
         return new ResponseEntity(HttpStatus.OK);
     }
     @DeleteMapping(value = {URI.BOOKS})
-    public ResponseEntity DeleteUser(@Valid @RequestBody Book book){
+    public ResponseEntity<?> DeleteUser(@Valid @RequestBody Book book){
         bookService.deleteBook(book);
         return new ResponseEntity(HttpStatus.OK);
     }

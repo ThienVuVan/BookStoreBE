@@ -20,22 +20,24 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "user_name", unique = true)
     @NotBlank
     @Length(max = 50, min = 5)
+    @Column(name = "user_name", unique = true)
     private String username;
 
+    @NotBlank
+    @Phone(message = "must be a well-formed phone number")
     @Column(name = "phone_number", unique = true)
-    @Phone
     private String phoneNumber;
 
-    @Column(name = "email", unique = true)
+    @NotBlank
     @Email
+    @Column(name = "email", unique = true)
     private String email;
 
-    @Column(name = "password")
     @NotBlank
     @Length(max = 1000, min = 8)
+    @Column(name = "password")
     private String password;
 
     /* <-------------- Method for Entity --------------> */

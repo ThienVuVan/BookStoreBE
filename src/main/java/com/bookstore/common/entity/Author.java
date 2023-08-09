@@ -22,13 +22,13 @@ public class Author {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "name")
     @NotBlank
-    @Length(max = 50, min = 5)
+    @Length(min = 2)
+    @Column(name = "name")
     private String name;
 
-    @Column(name = "email")
     @Email
+    @Column(name = "email", nullable = true)
     private String email;
 
     /* <-------------- Entity Method -----------------> */

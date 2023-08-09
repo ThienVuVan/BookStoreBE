@@ -12,4 +12,9 @@ public interface UserService {
     public User updateUser(User user);
     public void deleteUser(User user);
     public Optional<User> retrieveByUserName(String username);
+    public Boolean isExistUserName(String username);
+    public Boolean isExistEmail(String email);
+    public Boolean isExistPhoneNumber(String phoneNumber);
+
+
 }

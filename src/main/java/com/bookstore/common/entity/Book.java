@@ -21,22 +21,24 @@ public class Book {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "title")
     @NotBlank
+    @Length(min = 1)
+    @Column(name = "title")
     private String title;
 
-    @Column(name = "price")
+    @NotNull
     @PositiveOrZero
+    @Column(name = "price")
     private Double price;
 
-    @Column(name = "current_quantity")
     @NotNull
     @Range(max = 10000, min = 0)
+    @Column(name = "current_quantity")
     private Integer currentQuantity;
 
-    @Column(name = "sold_quantity")
     @NotNull
     @Range(max = 10000, min = 0)
+    @Column(name = "sold_quantity")
     private Integer soldQuantity;
 
     /* <-------------- Method for Entity --------------> */

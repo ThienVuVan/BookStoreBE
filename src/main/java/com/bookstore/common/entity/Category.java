@@ -21,9 +21,9 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "name")
-    @Length(max = 50)
     @NotBlank
+    @Length(min = 2)
+    @Column(name = "name")
     private String name;
 
     /* <------------ Entity Method -------------> */

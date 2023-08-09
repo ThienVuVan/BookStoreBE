@@ -20,21 +20,24 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "date")
     @NotNull
+    @Temporal(TemporalType.DATE)
     @PastOrPresent
+    @Column(name = "date")
     private LocalDate date;
 
-    @Column(name = "total_price")
+    @NotNull
     @PositiveOrZero
+    @Column(name = "total_price")
     private Double totalPrice;
 
-    @Column(name = "delivery_address")
     @NotBlank
+    @Length(min = 5)
+    @Column(name = "delivery_address")
     private String DeliveryAddress;
 
-    @Column(name = "order_status")
     @NotNull
+    @Column(name = "order_status")
     private Boolean orderStatus;
 
     /* <---------- Entity Method -----------> */

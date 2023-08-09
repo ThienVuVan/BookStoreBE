@@ -27,6 +27,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
         /* if request start with these request -> does not filter */
         String requestURI = request.getRequestURI();
         return requestURI.startsWith("/swagger-ui") || requestURI.startsWith("/swagger-resources")
-                || requestURI.startsWith("/v3/api-docs")  || requestURI.startsWith(URI.USERS_LOGIN);
+                || requestURI.startsWith("/v3/api-docs")  || requestURI.startsWith(URI.USERS_LOGIN)
+                || requestURI.startsWith(URI.USERS_SIGNUP);
     }
 }

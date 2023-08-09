@@ -14,6 +14,7 @@ public class URI {
     /* User */
     public static final String USERS = "/api/v1/users";
     public static final String USERS_LOGIN = "/api/v1/users/login";
+    public static final String USERS_SIGNUP = "/api/v1/users/signup";
 
     /* Book */
     public static final String BOOKS = "/api/v1/books";

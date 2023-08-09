@@ -15,8 +15,8 @@ public class BookDetails {
     @Column(name = "publisher")
     private String publisher;
 
-    @Column(name = "publication_date")
     @Temporal(TemporalType.DATE)
+    @Column(name = "publication_date")
     private LocalDate publicationDate;
 
     @Column(name = "dimension")
@@ -31,8 +31,8 @@ public class BookDetails {
     @Column(name = "publishing_house")
     private String publishingHouse;
 
-    @Column(name = "description")
     @Lob
+    @Column(name = "description")
     private String description;
 
     /* <------------------ Entity Method -------------------> */

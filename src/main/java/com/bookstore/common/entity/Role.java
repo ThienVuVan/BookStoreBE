@@ -20,9 +20,9 @@ public class Role {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "name", unique = true)
     @NotBlank
-    @Length(max = 50)
+    @Length(min = 2)
+    @Column(name = "name", unique = true)
     private String name;
 
     public Role(String name) {

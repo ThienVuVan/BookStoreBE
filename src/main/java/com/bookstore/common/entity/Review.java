@@ -27,13 +27,13 @@ public class Review {
     @JoinColumn(name = "book_id")
     private Book book;
 
-    @Column(name = "comment")
-    @Length(max = 255, min = 1)
     @NotBlank
+    @Length(min = 1)
+    @Column(name = "comment")
     private String comment;
 
-    @Column(name = "image")
     @Lob
+    @Column(name = "image")
     private Byte[] image;
 
     /* <------------ Entity Method -------------> */

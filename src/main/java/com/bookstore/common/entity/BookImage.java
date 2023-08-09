@@ -12,9 +12,9 @@ public class BookImage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "image")
     @NotNull
     @Lob
+    @Column(name = "image")
     private Byte[] image;
 
     /* <------------------ Entity Method -------------------> */

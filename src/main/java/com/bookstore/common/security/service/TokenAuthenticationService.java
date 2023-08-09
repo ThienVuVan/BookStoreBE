@@ -1,15 +1,12 @@
 package com.bookstore.common.security.service;
 
-import com.bookstore.modules.auth.response.TokenResponse;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import lombok.Builder;
 import org.springframework.security.core.Authentication;
 
-import java.io.IOException;
 import java.util.Date;
+import java.util.List;
 
 public class TokenAuthenticationService {
     private final long EXPIRATIONTIME = 1000 * 60 * 60 * 24 * 10; // 10 days;
@@ -17,7 +14,7 @@ public class TokenAuthenticationService {
     private final String secret = "123";	// Must be an environment variable into OS;
     private final String tokenPrefix = "Bearer "; // "Bearer ";
     private final String headerString = "Authorization";
-    public TokenResponse generateToken(String username) {
+    public List<String> generateToken(String username) {
         byte[] secretKeyBytes = secret.getBytes(); // Have to convert to Byte;
         String token = Jwts.builder()
                 .setSubject(username)
@@ -37,7 +34,7 @@ public class TokenAuthenticationService {
 //        response.addHeader(headerString, tokenPrefix + token);
 //        response.addHeader("refreshToken", tokenPrefix + refreshToken);
 //        response.getWriter().write("Get Jwt Token Success");
-        return new TokenResponse(tokenPrefix + token, tokenPrefix + refreshToken);
+        return List.of(token, refreshToken);
     }
 
     public Authentication authenticateRequestByToken(HttpServletRequest request) {

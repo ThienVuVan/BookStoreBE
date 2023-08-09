@@ -1,5 +1,6 @@
 package com.bookstore.common.annotation;
 
+import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 
 import java.lang.annotation.Documented;
@@ -11,6 +12,7 @@ import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 @Documented
+@Constraint(validatedBy = PhoneValidator.class)
 @Retention(RUNTIME)
 @Target({FIELD, METHOD})
 public @interface Phone {

@@ -30,10 +30,10 @@ public class Rate {
     @JoinColumn(name = "book_id")
     private Book book;
 
-    @Column(name = "rating")
     @NotNull
     @PositiveOrZero
     @Range(max = 5, min = 0)
+    @Column(name = "rating")
     private Integer rating;
 
     /* <------------- Entity Method --------------> */
