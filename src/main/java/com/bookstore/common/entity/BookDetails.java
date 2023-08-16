@@ -2,38 +2,44 @@ package com.bookstore.common.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
 
+@Getter
+@Setter
+@NoArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
 @Table(name = "book_details")
-public class BookDetails {
+public class BookDetails extends Common {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    Integer id;
 
     @Column(name = "publisher")
-    private String publisher;
+    String publisher;
 
     @Temporal(TemporalType.DATE)
     @Column(name = "publication_date")
-    private LocalDate publicationDate;
+    LocalDate publicationDate;
 
     @Column(name = "dimension")
-    private String Dimension;
+    String Dimension;
 
     @Column(name = "cover_type")
-    private String coverType;
+    String coverType;
 
     @Column(name = "number_of_pages")
-    private Integer numberOfPages;
+    Integer numberOfPages;
 
     @Column(name = "publishing_house")
-    private String publishingHouse;
+    String publishingHouse;
 
     @Lob
     @Column(name = "description")
-    private String description;
+    String description;
 
     /* <------------------ Entity Method -------------------> */
 
@@ -44,5 +50,5 @@ public class BookDetails {
     /* Delete BookDetails, Does Not Delete Book */
     @JsonIgnore
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "bookDetails", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
-    private Book book;
+    Book book;
 }

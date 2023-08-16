@@ -1,52 +1,68 @@
 package com.bookstore.modules.shop.api;
 
-import com.bookstore.common.entity.Order;
-import com.bookstore.common.entity.Shop;
-import com.bookstore.common.enums.URI;
+import com.bookstore.common.enums.Uri;
 import com.bookstore.common.service.ShopService;
+import com.bookstore.modules.shop.request.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
 public class ShopController {
     private final ShopService shopService;
-    @GetMapping(value = {URI.SHOPS})
-    public ResponseEntity<List<Shop>> RetrieveAllShop(){
-        return new ResponseEntity<>(shopService.retrieveAllShop(), HttpStatus.OK);
-    }
-    @PostMapping(value = {URI.SHOPS})
-    public ResponseEntity CreateNewShop(@Valid @RequestBody Shop shop, BindingResult bindingResult){
-        if(bindingResult.hasErrors()){
-            // update later;
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
-        }
-        shopService.saveShop(shop);
-        return new ResponseEntity(HttpStatus.CREATED);
-    }
-    @PutMapping(value = {URI.SHOPS})
-    public ResponseEntity UpdateShop(@Valid @RequestBody Shop shop, BindingResult bindingResult){
-        if(bindingResult.hasErrors()){
-            // update later;
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
-        }
-        shopService.updateShop(shop);
-        return new ResponseEntity(HttpStatus.OK);
-    }
-    @DeleteMapping(value = {URI.SHOPS})
-    public ResponseEntity DeleteShop(@Valid @RequestBody Shop shop, BindingResult bindingResult){
-        if(bindingResult.hasErrors()){
-            // update later
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
-        }
-        shopService.deleteShop(shop);
-        return new ResponseEntity(HttpStatus.OK);
+
+    @GetMapping(value = {Uri.SHOPS})
+    public ResponseEntity<?> RetrieveShopByUserId(@RequestParam Integer userId){
+        return null;
     }
 
+    @PostMapping (value = {Uri.SHOPS})
+    public ResponseEntity<?> CreateShopForUser(@RequestParam Integer userId, @RequestBody MultipartFile shopLogo, @Valid @RequestBody ShopRequest shopRequest){
+        return null;
+    }
+
+    @PutMapping(value = {Uri.SHOPS})
+    public ResponseEntity<?> UpdateShopForUser(@RequestParam Integer userId, @RequestBody MultipartFile shopLogo,@Valid @RequestBody ShopRequest shopRequest ){
+        return null;
+    }
+
+    @DeleteMapping(value = {Uri.SHOPS})
+    public ResponseEntity<?> DeleteShopByUserId(@RequestParam Integer userId){
+        return null;
+    }
+
+
+    /* <------------------ Uri.SHOPS_DETAILS ------------------> */
+    @GetMapping(value = {Uri.SHOPS_DETAILS})
+    public ResponseEntity<?> RetrieveShopDetailForShop(@RequestParam Integer shopId){
+        return null;
+    }
+    @PostMapping(value = {Uri.SHOPS_DETAILS})
+    public ResponseEntity<?> CreateShopDetailForShop(@RequestParam Integer shopId, @Valid @RequestBody ShopDetailsRequest shopDetailsRequest){
+        return null;
+    }
+    @PutMapping(value = {Uri.SHOPS_DETAILS})
+    public ResponseEntity<?> UpdateShopDetailForShop(@RequestParam Integer shopId, @Valid @RequestBody ShopDetailsRequest shopDetailsRequest){
+        return null;
+    }
+    @DeleteMapping(value = {Uri.SHOPS_DETAILS})
+    public ResponseEntity<?> DeleteShopDetailForShop(@RequestParam Integer shopId){
+        return null;
+    }
+
+
+    /* <-------------------- Uri.SHOPS_ORDERS ---------------------> */
+    @GetMapping(value = {Uri.SHOPS_ORDERS})
+    public ResponseEntity<?> RetrieveOrdersForShop(@RequestParam Integer shopId, @Valid @RequestBody OrderSearchRequest orderSearchRequest){
+        return null;
+    }
+
+    /* <------------------ Uri.SHOPS_BOOK ------------------> */
+    @GetMapping(value = {Uri.SHOPS_BOOK})
+    public ResponseEntity<?> RetrieveBooksForShop(@RequestParam Integer shopId, @RequestParam BookSearchRequest bookSearchRequest){
+        return null;
+    }
 }

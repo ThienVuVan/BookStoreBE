@@ -3,9 +3,8 @@ package com.bookstore.common.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 import org.hibernate.validator.constraints.Length;
 import java.time.LocalDate;
 import java.util.Set;
@@ -13,32 +12,33 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
 @Table(name = "orders")
-public class Order {
+public class Order extends Common {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    Integer id;
 
     @NotNull
     @Temporal(TemporalType.DATE)
     @PastOrPresent
     @Column(name = "date")
-    private LocalDate date;
+    LocalDate date;
 
     @NotNull
     @PositiveOrZero
     @Column(name = "total_price")
-    private Double totalPrice;
+    Double totalPrice;
 
     @NotBlank
     @Length(min = 5)
     @Column(name = "delivery_address")
-    private String DeliveryAddress;
+    String DeliveryAddress;
 
     @NotNull
     @Column(name = "order_status")
-    private Boolean orderStatus;
+    Boolean orderStatus;
 
     /* <---------- Entity Method -----------> */
 
@@ -66,19 +66,19 @@ public class Order {
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name = "user_id")
-    private User user;
+    User user;
 
     /* To OrderItem */
     /* Delete Order, Delete OrderItem */
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "order", cascade = CascadeType.ALL)
-    private Set<OrderItem> orderItems;
+    Set<OrderItem> orderItems;
 
     /* To Shop */
     /* Delete Order, Does Not Delete Shop */
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name = "shop_id")
-    private Shop shop;
+    Shop shop;
 }
 

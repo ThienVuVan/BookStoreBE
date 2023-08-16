@@ -3,19 +3,26 @@ package com.bookstore.common.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
+@Builder
 @Entity
 @Table(name = "book_image")
-public class BookImage {
-
+public class BookImage extends Common {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    Integer id;
 
     @NotNull
     @Lob
-    @Column(name = "image")
-    private Byte[] image;
+    @Column(name = "image_path")
+    String imagePath;
 
     /* <------------------ Entity Method -------------------> */
 
@@ -27,5 +34,5 @@ public class BookImage {
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name = "book_id")
-    private Book book;
+    Book book;
 }

@@ -3,9 +3,8 @@ package com.bookstore.common.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 import org.hibernate.validator.constraints.Length;
 
 import java.util.HashSet;
@@ -13,17 +12,18 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
 @Table(name = "roles")
-public class Role {
+public class Role extends Common {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    Integer id;
 
     @NotBlank
     @Length(min = 2)
     @Column(name = "name", unique = true)
-    private String name;
+    String name;
 
     public Role(String name) {
         this.name = name;
@@ -41,7 +41,7 @@ public class Role {
     /* To User */
     @JsonIgnore
     @ManyToMany(mappedBy = "roles")
-    private Set<User> users;
+    Set<User> users;
 
     /* <--------------------- Convenience Method ----------------------> */
 

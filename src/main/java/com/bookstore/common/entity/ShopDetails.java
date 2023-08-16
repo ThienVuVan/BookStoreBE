@@ -2,25 +2,31 @@ package com.bookstore.common.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
+@Getter
+@Setter
+@NoArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
 @Table(name = "shop_details")
-public class ShopDetails {
+public class ShopDetails extends Common {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    Integer id;
 
     @Column(name = "description")
-    private String description;
+    String description;
 
     @Column(name = "operating_hours")
-    private String operationHours;
+    String operationHours;
 
     @Column(name = "shipping_policy")
-    private String shippingPolicy;
+    String shippingPolicy;
 
     @Column(name = "return_policy")
-    private String returnPolicy;
+    String returnPolicy;
 
     /* <------------------ Entity Method -------------------> */
 
@@ -31,5 +37,5 @@ public class ShopDetails {
     /* Delete ShopDetails, Does Not Delete Shop */
     @JsonIgnore
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "shopDetails", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
-    private Shop shop;
+    Shop shop;
 }

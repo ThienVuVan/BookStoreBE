@@ -1,13 +1,14 @@
 package com.bookstore.modules.order.api;
 
-import com.bookstore.common.entity.Order;
-import com.bookstore.common.enums.URI;
+import com.bookstore.common.enums.Uri;
 import com.bookstore.common.service.OrderService;
+import com.bookstore.modules.order.request.OrderItemRequest;
+import com.bookstore.modules.order.request.OrderRequest;
+import com.bookstore.modules.order.request.OrderUpdateRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,36 +16,25 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 public class OrderController {
+
     private final OrderService orderService;
-    @GetMapping(value = {URI.ORDERS})
-    public ResponseEntity<List<Order>> RetrieveAllOrder(){
-        return new ResponseEntity<>(orderService.retrieveAllOrder(), HttpStatus.OK);
-    }
-    @PostMapping(value = {URI.ORDERS})
-    public ResponseEntity CreateNewOrder(@Valid @RequestBody Order order, BindingResult bindingResult){
-        if(bindingResult.hasErrors()){
-            // update later;
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
-        }
-        orderService.saveOrder(order);
+
+    @PostMapping(value = {Uri.ORDERS})
+    public ResponseEntity<?> CreateNewOrder(@Valid @RequestBody OrderRequest orderRequest,
+                                            @Valid @RequestBody List<OrderItemRequest> orderItemRequests){
+
         return new ResponseEntity(HttpStatus.CREATED);
     }
-    @PutMapping(value = {URI.ORDERS})
-    public ResponseEntity UpdateOrder(@Valid @RequestBody Order order, BindingResult bindingResult){
-        if(bindingResult.hasErrors()){
-            // update later;
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
-        }
-        orderService.updateOrder(order);
-        return new ResponseEntity(HttpStatus.OK);
+    @PutMapping(value = {Uri.ORDERS})
+    public ResponseEntity<?> UpdateOrder(@RequestParam Integer orderId, @Valid @RequestBody OrderUpdateRequest orderUpdateRequest){
+        return null;
     }
-    @DeleteMapping(value = {URI.ORDERS})
-    public ResponseEntity DeleteOrder(@Valid @RequestBody Order order, BindingResult bindingResult){
-        if(bindingResult.hasErrors()){
-            // update later
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
-        }
-        orderService.deleteOrder(order);
-        return new ResponseEntity(HttpStatus.OK);
+    @DeleteMapping(value = {Uri.ORDERS})
+    public ResponseEntity<?> DeleteOrder(@RequestParam Integer orderId){
+        return null;
+    }
+    @GetMapping(value = {Uri.ORDERS_ORDER_ITEMS})
+    public ResponseEntity<?> RetrieveAllOrderItemsForOrder(@RequestParam Integer orderId){
+        return null;
     }
 }

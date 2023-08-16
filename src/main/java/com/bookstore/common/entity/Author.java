@@ -4,32 +4,31 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 import org.hibernate.validator.constraints.Length;
-
 import java.util.HashSet;
 import java.util.Set;
 
-@Setter
 @Getter
+@Setter
 @NoArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
 @Table(name = "authors")
-public class Author {
+public class Author extends Common{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    Integer id;
 
     @NotBlank
     @Length(min = 2)
     @Column(name = "name")
-    private String name;
+    String name;
 
     @Email
     @Column(name = "email", nullable = true)
-    private String email;
+    String email;
 
     /* <-------------- Entity Method -----------------> */
 
@@ -53,7 +52,5 @@ public class Author {
     /* Delete Author, Delete Book */
     @JsonIgnore
     @ManyToMany(mappedBy = "authors")
-    private Set<Book> books = new HashSet<>();
-
-
+    Set<Book> books = new HashSet<>();
 }

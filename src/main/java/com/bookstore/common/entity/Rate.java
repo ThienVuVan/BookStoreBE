@@ -4,37 +4,37 @@ import com.bookstore.common.entity.compositekey.UserBookKey;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 import org.hibernate.validator.constraints.Range;
 
-@Setter
 @Getter
+@Setter
 @NoArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
 @Table(name = "rates")
-public class Rate {
+public class Rate extends Common {
     @EmbeddedId
-    private UserBookKey id;
+    UserBookKey id;
 
     /* Delete Rate, Does Not Delete User */
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
     @MapsId("userId")
     @JoinColumn(name = "user_id")
-    private User user;
+    User user;
 
     /* Delete Rate, Does Not Delete Book */
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
     @MapsId("bookId")
     @JoinColumn(name = "book_id")
-    private Book book;
+    Book book;
 
     @NotNull
     @PositiveOrZero
     @Range(max = 5, min = 0)
     @Column(name = "rating")
-    private Integer rating;
+    Integer rating;
 
     /* <------------- Entity Method --------------> */
 

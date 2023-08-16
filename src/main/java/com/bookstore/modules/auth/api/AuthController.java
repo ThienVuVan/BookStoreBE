@@ -3,7 +3,7 @@ package com.bookstore.modules.auth.api;
 import com.bookstore.common.entity.Role;
 import com.bookstore.common.entity.User;
 import com.bookstore.common.enums.Constant;
-import com.bookstore.common.enums.URI;
+import com.bookstore.common.enums.Uri;
 import com.bookstore.common.security.service.TokenAuthenticationService;
 import com.bookstore.common.service.RoleService;
 import com.bookstore.common.service.UserService;
@@ -26,7 +26,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @RestController
@@ -36,10 +35,11 @@ public class AuthController {
     private final RoleService roleService;
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
-    @PostMapping(value = {URI.USERS_LOGIN})
+
+    @PostMapping(value = {Uri.USERS_LOGIN})
     public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest){
-        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword());
-        Authentication authentication = authenticationManager.authenticate(token);
+        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword());
+        Authentication authentication = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);
         Authentication user = SecurityContextHolder.getContext().getAuthentication();
         List<String> listToken = new TokenAuthenticationService().generateToken(user.getName());
@@ -51,7 +51,7 @@ public class AuthController {
                 ));
     }
 
-    @PostMapping(value = {URI.USERS_SIGNUP})
+    @PostMapping(value = {Uri.USERS_SIGNUP})
     public ResponseEntity<?> register(@Valid @RequestBody SignupRequest signupRequest){
         if(userService.isExistUserName(signupRequest.getUsername())){
             return new ResponseEntity<>(new MessageResponse("UserName is already taken!"), HttpStatus.BAD_REQUEST);
@@ -66,7 +66,7 @@ public class AuthController {
         User user = new User(signupRequest.getUsername(), signupRequest.getPhoneNumber(),
                 signupRequest.getEmail(), passwordEncoder.encode(signupRequest.getPassword()));
 
-        Set<String> strRoles = signupRequest.getRoles();
+        List<String> strRoles = signupRequest.getRoles();
 
         if(strRoles == null){
             Optional<Role> role = roleService.retrieveByName(Constant.ROLE_USER);

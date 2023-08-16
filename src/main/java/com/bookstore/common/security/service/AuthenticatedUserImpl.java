@@ -3,7 +3,7 @@ package com.bookstore.common.security.service;
 import com.bookstore.common.configuration.BeanUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import java.util.Collection;
 
@@ -15,7 +15,7 @@ public class AuthenticatedUserImpl implements Authentication {
     public AuthenticatedUserImpl(String username) {
         // Get UserDetailsService from Context, Cannot Autowired In Non-Managed Class By Spring;
         userDetailsService = BeanUtils.getBean(UserDetailsServiceImpl.class);
-        User user = (User) userDetailsService.loadUserByUsername(username);
+        UserDetails user = userDetailsService.loadUserByUsername(username);
         this.username = user.getUsername();
         this.authorities = user.getAuthorities();
         this.authenticated = true;

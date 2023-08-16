@@ -31,9 +31,6 @@ public class TokenAuthenticationService {
                 .setExpiration(new Date(System.currentTimeMillis() + REFRESHEXPIRATIONTIME))
                 .signWith(SignatureAlgorithm.HS256,secretKeyBytes)
                 .compact();
-//        response.addHeader(headerString, tokenPrefix + token);
-//        response.addHeader("refreshToken", tokenPrefix + refreshToken);
-//        response.getWriter().write("Get Jwt Token Success");
         return List.of(token, refreshToken);
     }
 

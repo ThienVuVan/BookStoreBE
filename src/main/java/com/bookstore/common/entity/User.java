@@ -6,39 +6,40 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 import org.hibernate.validator.constraints.Length;
-
 import java.util.HashSet;
 import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
 @Table(name = "users")
-public class User {
+public class User extends Common {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    Integer id;
 
     @NotBlank
     @Length(max = 50, min = 5)
     @Column(name = "user_name", unique = true)
-    private String username;
+    String username;
 
     @NotBlank
     @Phone(message = "must be a well-formed phone number")
     @Column(name = "phone_number", unique = true)
-    private String phoneNumber;
+    String phoneNumber;
 
     @NotBlank
     @Email
     @Column(name = "email", unique = true)
-    private String email;
+    String email;
 
     @NotBlank
-    @Length(max = 1000, min = 8)
+    @Length(min = 8)
     @Column(name = "password")
-    private String password;
+    String password;
 
     /* <-------------- Method for Entity --------------> */
 
@@ -82,40 +83,40 @@ public class User {
     /* To Role */
     /* Delete User, Does Not Delete Role */
     @JsonIgnore
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinTable(name = "users_roles",
     joinColumns = @JoinColumn(name = "user_id"),
     inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Role> roles;
+    Set<Role> roles;
 
     /* To Book */
     /* Delete User, Delete All Book Belong To User */
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL)
-    private Set<Book> books;
+    Set<Book> books;
 
     /* To Shop */
     /* Delete User, Delete Shop */
     @JsonIgnore
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "shop_id")
-    private Shop shop;
+    Shop shop;
 
     /* To Review */
     /* Delete User, Delete Review */
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL)
-    private Set<Review> reviews;
+    Set<Review> reviews;
 
     /* To Rate */
     /* Delete User, Delete Rate */
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL)
-    private Set<Rate> rates;
+    Set<Rate> rates;
 
     /* To Order */
     /* Delete User, Delete Order */
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL)
-    private Set<Order> orders;
+    Set<Order> orders;
 }

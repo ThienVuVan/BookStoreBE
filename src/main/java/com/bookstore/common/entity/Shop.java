@@ -6,39 +6,44 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 import org.hibernate.validator.constraints.Length;
 
 import java.util.Set;
 
 
+@Getter
+@Setter
+@NoArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
 @Table(name = "shops")
-public class Shop {
+public class Shop extends Common {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    Integer id;
 
     @NotNull
     @Lob
-    @Column(name = "shop_logo")
-    private Byte[] shopLogo;
-
+    @Column(name = "shop_logo_path")
+    String shopLogoPath;
 
     @NotBlank
     @Length(min = 2)
     @Column(name = "shop_name")
-    private String shopName;
+    String shopName;
 
     @Column(name = "shop_address")
-    private String shopAddress;
+    String shopAddress;
 
     @Phone
     @Column(name = "contact_phone")
-    private String contactPhone;
+    String contactPhone;
 
     @Email
     @Column(name = "contact_email")
-    private String contactEmail;
+    String contactEmail;
 
     /* <------------------ Entity Method -------------------> */
 
@@ -50,17 +55,17 @@ public class Shop {
     @JsonIgnore
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "shop_details_id")
-    private ShopDetails shopDetails;
+    ShopDetails shopDetails;
 
     /* To Order */
     /* Delete Shop, Delete Order */
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "shop", cascade = CascadeType.ALL)
-    private Set<Order> orders;
+    Set<Order> orders;
 
     /* To User */
     /* Delete Shop, Does Not Delete User */
     @JsonIgnore
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "shop", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
-    private User user;
+    User user;
 }

@@ -3,37 +3,37 @@ package com.bookstore.common.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 import org.hibernate.validator.constraints.Range;
 
-@Setter
 @Getter
+@Setter
 @NoArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
 @Table(name = "order_items")
-public class OrderItem {
+public class OrderItem extends Common {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    Integer id;
 
     /* Delete OrderItem, Does Not Delete Order */
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name = "order_id")
-    private Order order;
+    Order order;
 
     /* Delete OrderItem, Does Not Delete Book */
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name = "book_id")
-    private Book book;
+    Book book;
 
 
     @NotNull
     @PositiveOrZero
     @Range(max = 1000, min = 1)
     @Column(name = "quantity")
-    private Integer quantity;
+    Integer quantity;
 
     /* <-------------- Entity Method ----------------> */
 

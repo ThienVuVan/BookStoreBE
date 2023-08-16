@@ -4,32 +4,37 @@ import com.bookstore.common.annotation.Phone;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 import org.hibernate.validator.constraints.Length;
+
+import java.util.List;
 import java.util.Set;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class SignupRequest {
     @NotBlank
     @Length(max = 50, min = 5)
-    private String username;
+    String username;
 
     @NotBlank
     @Phone(message = "must be a well-formed phone number")
-    private String phoneNumber;
+    String phoneNumber;
 
     @NotBlank
     @Email
-    private String email;
+    String email;
 
     @NotBlank
     @Length(max = 1000, min = 8)
-    private String password;
+    String password;
 
-    @NotEmpty
-    Set<String> roles;
+    List<String> roles;
+
+
 }

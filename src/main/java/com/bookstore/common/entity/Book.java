@@ -3,43 +3,43 @@ package com.bookstore.common.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.Range;
 import java.util.HashSet;
 import java.util.Set;
 
-@Setter
 @Getter
+@Setter
 @NoArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
 @Table(name = "books")
-public class Book {
+public class Book extends Common {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    Integer id;
 
     @NotBlank
     @Length(min = 1)
     @Column(name = "title")
-    private String title;
+    String title;
 
     @NotNull
     @PositiveOrZero
     @Column(name = "price")
-    private Double price;
+    Double price;
 
     @NotNull
     @Range(max = 10000, min = 0)
     @Column(name = "current_quantity")
-    private Integer currentQuantity;
+    Integer currentQuantity;
 
     @NotNull
     @Range(max = 10000, min = 0)
     @Column(name = "sold_quantity")
-    private Integer soldQuantity;
+    Integer soldQuantity;
 
     /* <-------------- Method for Entity --------------> */
 
@@ -75,6 +75,12 @@ public class Book {
         category.getBooks().add(this);
     }
 
+    public void addBookImage(BookImage bookImage){
+        if(bookImages == null) bookImages = new HashSet<>();
+        bookImages.add(bookImage);
+        bookImage.setBook(this);
+    }
+
     /* <-------------- Mapping ----------------> */
 
     /* To BookDetails */
@@ -82,33 +88,33 @@ public class Book {
     @JsonIgnore
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "book_details_id")
-    private BookDetails bookDetails;
+    BookDetails bookDetails;
 
 
     /* To BookImage */
     /* Delete Book, Delete BookImage */
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "book", cascade = CascadeType.ALL)
-    private Set<BookImage> bookImages;
+    Set<BookImage> bookImages;
 
     /* To User */
     /* Delete Book, Does Not Delete User */
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private User user;
+    User user;
 
     /* To Review */
     /* Delete Book, Delete Reviews */
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "book", cascade = CascadeType.ALL)
-    private Set<Review> reviews;
+    Set<Review> reviews;
 
     /* To Rate */
     /* Delete Book, Delete Rate */
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "book", cascade = CascadeType.ALL)
-    private Set<Rate> rates;
+    Set<Rate> rates;
 
     /* To BookCategory */
     /* Delete Book, Delete Category, Update Later */
@@ -117,7 +123,7 @@ public class Book {
     @JoinTable(name = "books_categories",
     joinColumns = @JoinColumn(name = "book_id"),
     inverseJoinColumns = @JoinColumn(name = "category_id"))
-    private Set<Category> categories;
+    Set<Category> categories;
 
     /* To BookAuthor */
     /* Delete Book, Delete Author */
@@ -126,11 +132,11 @@ public class Book {
     @JoinTable(name = "books_authors",
     joinColumns = @JoinColumn(name = "book_id"),
     inverseJoinColumns = @JoinColumn(name = "author_id"))
-    private Set<Author> authors;
+    Set<Author> authors;
 
     /* To OrderItem */
     /* Delete Book, Delete Order */
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "book", cascade = CascadeType.ALL)
-    private Set<OrderItem> orderItems;
+    Set<OrderItem> orderItems;
 }

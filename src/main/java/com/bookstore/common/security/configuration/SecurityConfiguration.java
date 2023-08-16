@@ -1,6 +1,6 @@
 package com.bookstore.common.security.configuration;
 
-import com.bookstore.common.enums.URI;
+import com.bookstore.common.enums.Uri;
 import com.bookstore.common.security.exception.AuthenticationEntryPointImpl;
 import com.bookstore.common.security.filter.JWTAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +37,6 @@ public class SecurityConfiguration {
     public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
     }
-
     @Bean
     public AuthenticationProvider authenticationProvider(){
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
@@ -45,35 +44,26 @@ public class SecurityConfiguration {
         daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
         return daoAuthenticationProvider;
     }
-
     @Bean
     public AuthenticationManager authenticationManager(){
         return new ProviderManager(Collections.singletonList(authenticationProvider()));
     }
-
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-
         /* Authorization Request */
         http.authorizeHttpRequests(request -> request
-                .requestMatchers(HttpMethod.GET,URI.USERS).hasAnyRole("ADMIN")
+                .requestMatchers(HttpMethod.GET, Uri.USERS).hasAnyRole("USER")
                 .requestMatchers("/swagger-ui/**", "/swagger-resources/**", "/v3/api-docs/**").permitAll()
-                .requestMatchers(HttpMethod.POST,URI.USERS_LOGIN, URI.USERS_SIGNUP).permitAll()
+                .requestMatchers(Uri.USERS_LOGIN, Uri.USERS_SIGNUP).permitAll()
                 .anyRequest().authenticated()
         );
 
-        /* Login Filter */
-        /* Using API */
-        //http.addFilterBefore(new JWTLoginFilter(URI.USERS_LOGIN, authenticationManager()), UsernamePasswordAuthenticationFilter.class);
 
         /* Authentication JWT Filter */
         http.addFilterBefore((new JWTAuthenticationFilter()), UsernamePasswordAuthenticationFilter.class);
 
         /* Disable Basic Authentication */
         http.httpBasic(request -> request.disable());
-
-        /* Basic Authentication */
-        //http.httpBasic(Customizer.withDefaults());
 
         /* Disable Cross Site Request Forgery */
         http.csrf(request -> request.disable());
@@ -83,6 +73,7 @@ public class SecurityConfiguration {
 
         /* Handle Authentication Exception */
         http.exceptionHandling(exception -> exception.authenticationEntryPoint(authenticationEntryPoint()));
+
         /* Build */
         return http.build();
     }

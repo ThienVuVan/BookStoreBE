@@ -10,7 +10,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class CategoryServiceImpl implements CategoryService {
-    private CategoryRepository categoryRepository;
+    private final CategoryRepository categoryRepository;
     @Override
     public List<Category> retrieveAllCategory() {
         return categoryRepository.findAll();
@@ -29,5 +29,21 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public void deleteCategory(Category category) {
         categoryRepository.delete(category);
+    }
+
+    @Override
+    public List<Category> retrieveAllParentCategory() {
+        return categoryRepository.findAllParentCategory();
+    }
+
+    @Override
+    public Category retrieveByCategoryName(String name) {
+        return categoryRepository.findCategoryByName(name);
+
+    }
+
+    @Override
+    public List<Category> retrieveByParentId(Integer parentId) {
+        return categoryRepository.findCategoriesByParentId(parentId);
     }
 }

@@ -1,10 +1,10 @@
 package com.bookstore.common.service.impl;
 
-import com.bookstore.common.dto.BookDto;
+import com.bookstore.modules.book.dto.BookDto;
 import com.bookstore.common.entity.Book;
 import com.bookstore.common.repository.BookRepository;
 import com.bookstore.common.service.BookService;
-import com.bookstore.modules.book.dto.BookMapper;
+import com.bookstore.modules.book.mapper.BookMapper;
 import lombok.RequiredArgsConstructor;
 import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Service;
@@ -41,4 +41,14 @@ public class BookServiceImpl implements BookService {
     public Book retrieveByTitle(String title) {
         return bookRepository.findByTitle(title);
     }
+
+    @Override
+    public Book retrieveById(Integer id) {
+        return bookRepository.findBookById(id);
+    }
+
+//    @Override
+//    public List<BookImage> retrieveBookImagesByBookId(Integer id) {
+//        return bookRepository.findBookImageByBookId(id);
+//    }
 }

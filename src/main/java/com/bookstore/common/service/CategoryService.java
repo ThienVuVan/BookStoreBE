@@ -8,4 +8,7 @@ public interface CategoryService {
     public Category saveCategory(Category category);
     public Category updateCategory(Category category);
     public void deleteCategory(Category category);
+    public List<Category> retrieveAllParentCategory();
+    public Category retrieveByCategoryName(String name);
+    public List<Category> retrieveByParentId(Integer parentId);
 }

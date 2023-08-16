@@ -1,6 +1,6 @@
 package com.bookstore.common.security.filter;
 
-import com.bookstore.common.enums.URI;
+import com.bookstore.common.enums.Uri;
 import com.bookstore.common.security.service.TokenAuthenticationService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -27,7 +27,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
         /* if request start with these request -> does not filter */
         String requestURI = request.getRequestURI();
         return requestURI.startsWith("/swagger-ui") || requestURI.startsWith("/swagger-resources")
-                || requestURI.startsWith("/v3/api-docs")  || requestURI.startsWith(URI.USERS_LOGIN)
-                || requestURI.startsWith(URI.USERS_SIGNUP);
+                || requestURI.startsWith("/v3/api-docs")  || requestURI.startsWith(Uri.USERS_LOGIN)
+                || requestURI.startsWith(Uri.USERS_SIGNUP);
     }
 }

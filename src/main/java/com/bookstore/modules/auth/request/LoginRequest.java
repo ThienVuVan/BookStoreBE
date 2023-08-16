@@ -1,20 +1,20 @@
 package com.bookstore.modules.auth.request;
 
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 import org.hibernate.validator.constraints.Length;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class LoginRequest {
     @NotBlank
     @Length(max = 50, min = 5)
-    private String username;
+    String username;
 
     @NotBlank
-    @Length(max = 1000, min = 8)
-    private String password;
+    String password;
 }
