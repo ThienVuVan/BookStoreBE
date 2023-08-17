@@ -4,6 +4,7 @@ import com.bookstore.common.entity.Category;
 import com.bookstore.common.enums.Uri;
 import com.bookstore.common.service.CategoryService;
 import com.bookstore.modules.category.dto.CategoryDto;
+import com.bookstore.modules.category.request.CategoryRequest;
 import com.bookstore.modules.category.service.CategoryModuleService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
@@ -17,24 +18,19 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 public class CategoryController {
-
     private final CategoryService categoryService;
     private final CategoryModuleService categoryModuleService;
-    @SecurityRequirement(name = "Bearer Authentication")
+
     @GetMapping(value = {Uri.PARENT_CATEGORIES})
     public ResponseEntity<?> RetrieveAllParentCategory() {
         return ResponseEntity.ok(categoryModuleService.CategoryToCategoryDto(categoryService.retrieveAllParentCategory()));
     }
 
-    @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping(value = {Uri.CHILD_CATEGORIES})
-    public ResponseEntity<?> RetrieveAllChildCategoryByParentName(@RequestParam String parentName){
-        Category parentCategory = categoryService.retrieveByCategoryName(parentName);
-        List<CategoryDto> childCategories = categoryModuleService.CategoryToCategoryDto(categoryService.retrieveByParentId(parentCategory.getId()));
-        return ResponseEntity.ok(childCategories);
+    public ResponseEntity<?> RetrieveAllChildCategoryByParentName(@RequestParam Integer parentId){
+        return null;
     }
 
-    @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping(value = {Uri.PARENT_CATEGORIES})
     public ResponseEntity<?> CreateParentCategory(@RequestParam String newName){
         Category category = new Category(newName, null);
@@ -42,12 +38,11 @@ public class CategoryController {
         return new ResponseEntity(HttpStatus.CREATED);
     }
 
-    @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping(value = {Uri.CHILD_CATEGORIES})
-    public ResponseEntity<?> CreateChildCategory(@RequestParam String parentName, @RequestParam String childName){
-        Category parentCategory = categoryService.retrieveByCategoryName(parentName);
-        Category childCategory = new Category(childName, parentCategory.getId());
-        categoryService.saveCategory(childCategory);
+    public ResponseEntity<?> CreateChildCategory(@Valid @RequestBody CategoryRequest categoryRequest){
+//        Category parentCategory = categoryService.retrieveByCategoryName(parentName);
+//        Category childCategory = new Category(childName, parentCategory.getId());
+//        categoryService.saveCategory(childCategory);
         return new ResponseEntity(HttpStatus.CREATED);
     }
 
@@ -62,7 +57,7 @@ public class CategoryController {
     }
 
     @DeleteMapping(value = {Uri.PARENT_CATEGORIES})
-    public ResponseEntity<?> DeleteParentCategory(@RequestParam String parentName){
+    public ResponseEntity<?> DeleteParentCategory(@RequestParam Integer parentId){
         return new ResponseEntity(HttpStatus.OK);
     }
 

@@ -12,6 +12,9 @@ import org.hibernate.validator.constraints.Range;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class RateCreateRequest {
     @NotNull
+    Integer userId;
+
+    @NotNull
     Integer bookId;
 
     @NotNull

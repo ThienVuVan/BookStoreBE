@@ -15,6 +15,9 @@ import org.hibernate.validator.constraints.Length;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ShopRequest {
+    @NotNull
+    Integer userId;
+
     @NotBlank
     @Length(min = 2)
     String shopName;

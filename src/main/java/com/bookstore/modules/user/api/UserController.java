@@ -1,7 +1,9 @@
 package com.bookstore.modules.user.api;
 
+import com.bookstore.common.entity.User;
 import com.bookstore.common.enums.Uri;
 import com.bookstore.common.service.UserService;
+import com.bookstore.modules.order.dto.OrderDto;
 import com.bookstore.modules.order.service.OrderModuleService;
 import com.bookstore.modules.user.dto.UserDto;
 import com.bookstore.modules.user.request.*;
@@ -31,40 +33,54 @@ public class UserController {
         return new ResponseEntity<>(userDto, HttpStatus.OK);
     }
 
+    // non - test
     @PutMapping(value = {Uri.USERS})
-    public ResponseEntity<Object> UpdateUser(@RequestParam Integer userId, @Valid @RequestBody UserUpdateRequest userUpdateRequest){
+    public ResponseEntity<Object> UpdateUser(@Valid @RequestBody UserUpdateRequest userUpdateRequest){
+        User user = userService.retrieveUserById(userUpdateRequest.getId());
+        user.setUsername(userUpdateRequest.getUsername());
+        user.setPhoneNumber(userUpdateRequest.getPhoneNumber());
+        user.setEmail(userUpdateRequest.getEmail());
+        userService.updateUser(user);
         return new ResponseEntity(HttpStatus.OK);
     }
 
+    // non - test
     @DeleteMapping(value = {Uri.USERS})
     public ResponseEntity<Object> DeleteUser(@RequestParam Integer userId){
-        return null;
+        User user = userService.retrieveUserById(userId);
+        userService.deleteUser(user);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     /* <------------------- Uri.USERS_ORDERS ------------------> */
 
-//    @GetMapping(value = {Uri.USERS_ORDERS})
-//    public ResponseEntity<?> RetrieveALlOrdersForUser(@RequestParam Integer userId){
-//        List<OrderDto> orderDtoList = orderModuleService.OrderToOrderDto(userService.retrieveOrdersByUserId(userId));
-//        return ResponseEntity.ok(orderDtoList);
-//    }
+    // non - test
+    @GetMapping(value = {Uri.USERS_ORDERS})
+    public ResponseEntity<?> RetrieveALlOrdersForUser(@RequestParam Integer userId){
+        List<OrderDto> orderDtoList = orderModuleService.OrderToOrderDto(userService.retrieveOrdersByUserId(userId));
+        return ResponseEntity.ok(orderDtoList);
+    }
 
     /* <---------------------- Uri.USERS_REVIEWS ------------------------> */
 
+    // implement
     @PostMapping(value = {Uri.USERS_REVIEWS})
-    public ResponseEntity<?> CreateReviewForUser(@RequestParam Integer userId, @RequestBody MultipartFile image, @Valid @RequestBody ReviewCreateRequest reviewCreateRequest){
+    public ResponseEntity<?> CreateReviewForUser(@RequestBody(required = false) MultipartFile image, @Valid @RequestBody ReviewCreateRequest reviewCreateRequest){
         return  null;
     }
+    // implement
     @DeleteMapping(value = {Uri.USERS_REVIEWS})
     public ResponseEntity<?> DeleteReviewForUser(@RequestParam Integer reviewId){
         return  null;
     }
 
     /* <------------------- Uri.USERS_RATES --------------------> */
+    // implement
     @PostMapping(value = {Uri.USERS_RATES})
-    public ResponseEntity<?> CreateRateForUser(@RequestParam Integer userId, @Valid @RequestBody RateCreateRequest rateCreateRequest){
+    public ResponseEntity<?> CreateRateForUser(@Valid @RequestBody RateCreateRequest rateCreateRequest){
         return  null;
     }
+    // implement
     @DeleteMapping(value = {Uri.USERS_RATES})
     public ResponseEntity<?> DeleteRateForUser(@RequestParam Integer rateId){return  null;}
 

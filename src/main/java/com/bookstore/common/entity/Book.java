@@ -83,6 +83,13 @@ public class Book extends Common {
 
     /* <-------------- Mapping ----------------> */
 
+    /* To Shop */
+    /* Delete Book, Does Not Delete Shop */
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
+    @JoinColumn(name = "shop_id")
+    Shop shop;
+
     /* To BookDetails */
     /* Delete Book, Delete BookDetails */
     @JsonIgnore

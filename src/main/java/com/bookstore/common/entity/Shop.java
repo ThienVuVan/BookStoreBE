@@ -16,7 +16,9 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@Builder
 @Entity
 @Table(name = "shops")
 public class Shop extends Common {
@@ -49,6 +51,12 @@ public class Shop extends Common {
 
 
     /* <------------------ Mapping --------------------> */
+
+    /* To Book */
+    /* Delete Shop, Delete Books */
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "shop", cascade = CascadeType.ALL)
+    Set<Book> books;
 
     /* To ShopDetails */
     /* Delete Shop, Delete ShopDetails */

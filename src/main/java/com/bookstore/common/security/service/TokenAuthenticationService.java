@@ -37,6 +37,7 @@ public class TokenAuthenticationService {
     public Authentication authenticateRequestByToken(HttpServletRequest request) {
         byte[] secretKeyBytes = secret.getBytes();
         // need check isExist Token and  isStart with 'Bearer ' before get token (implement later);
+        System.out.println(request.getHeader(headerString));
         String token = request.getHeader(headerString).substring(7);
         String username = Jwts.parser().setSigningKey(secretKeyBytes).parseClaimsJws(token)
                 .getBody().getSubject();

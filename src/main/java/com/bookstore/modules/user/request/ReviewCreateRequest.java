@@ -15,6 +15,9 @@ import org.hibernate.validator.constraints.Length;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ReviewCreateRequest {
     @NotNull
+    Integer userId;
+
+    @NotNull
     Integer bookId;
 
     @NotBlank

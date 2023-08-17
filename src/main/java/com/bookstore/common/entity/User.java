@@ -77,6 +77,10 @@ public class User extends Common {
         orders.add(order);
         order.setUser(this);
     }
+    public void addShop(Shop shop){
+        setShop(shop);
+        shop.setUser(this);
+    }
 
     /* <------------- Mapping -------------> */
 

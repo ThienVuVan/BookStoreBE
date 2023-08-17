@@ -14,6 +14,8 @@ import org.hibernate.validator.constraints.Length;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserUpdateRequest {
+    @NotNull
+    Integer id;
 
     @NotBlank
     @Length(max = 50, min = 5)
