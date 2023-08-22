@@ -19,13 +19,7 @@ import java.time.LocalDate;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class OrderUpdateRequest {
     @NotNull
-    @PositiveOrZero
-    Double totalPrice;
-
-    @NotBlank
-    @Length(min = 5)
-    String DeliveryAddress;
-
+    Integer orderId;
     @NotNull
-    Boolean orderStatus;
+    String orderStatus;
 }

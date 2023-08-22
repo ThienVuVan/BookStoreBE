@@ -1,5 +1,6 @@
 package com.bookstore.modules.category.request;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -9,7 +10,7 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CategoryRequest {
-    Integer id;
+    @NotNull
     String name;
     Integer parenId;
 }

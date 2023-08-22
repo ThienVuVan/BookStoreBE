@@ -47,7 +47,14 @@ public class Shop extends Common {
     @Column(name = "contact_email")
     String contactEmail;
 
+    /* <----------------- Convenience Method --------------> */
+    public void addShopDetails(ShopDetails shopDetails){
+        setShopDetails(shopDetails);
+        shopDetails.setShop(this);
+    }
+
     /* <------------------ Entity Method -------------------> */
+
 
 
     /* <------------------ Mapping --------------------> */

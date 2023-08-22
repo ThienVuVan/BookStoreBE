@@ -37,11 +37,13 @@ public class Review extends Common {
 
     /* <------------ Entity Method -------------> */
 
-    public Review(User user, Book book, String comment) {
+    public Review(User user, Book book, String comment, String image) {
         this.user = user;
         this.book = book;
         this.comment = comment;
+        this.image = image;
     }
+
     @Override
     public String toString() {
         return "Review{" +

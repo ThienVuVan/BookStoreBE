@@ -4,6 +4,9 @@ import com.bookstore.common.entity.Review;
 import com.bookstore.common.repository.ReviewRepository;
 import com.bookstore.common.service.ReviewService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -31,5 +34,15 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public void deleteReview(Review review) {
         reviewRepository.delete(review);
+    }
+
+    @Override
+    public Review retrieveReviewById(Integer id) {
+        return reviewRepository.findReviewById(id);
+    }
+
+    @Override
+    public Page<Review> retrieveReviewsByPage(Integer bookId, Pageable pageable) {
+        return reviewRepository.findReviewByBookId(bookId, pageable);
     }
 }

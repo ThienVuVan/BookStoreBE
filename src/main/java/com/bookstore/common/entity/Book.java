@@ -43,11 +43,18 @@ public class Book extends Common {
 
     /* <-------------- Method for Entity --------------> */
 
+
     public Book(String title, @NotNull Double price, @NotNull Integer currentQuantity, @NotNull Integer soldQuantity) {
         this.title = title;
         this.price = price;
         this.currentQuantity = currentQuantity;
         this.soldQuantity = soldQuantity;
+    }
+
+    public Book(String title, @NotNull Double price, @NotNull Integer currentQuantity) {
+        this.title = title;
+        this.price = price;
+        this.currentQuantity = currentQuantity;
     }
 
     @Override

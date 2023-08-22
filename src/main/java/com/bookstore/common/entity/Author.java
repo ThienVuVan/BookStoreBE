@@ -37,6 +37,10 @@ public class Author extends Common{
         this.email = email;
     }
 
+    public Author(String name) {
+        this.name = name;
+    }
+
     @Override
     public String toString() {
         return "Author{" +

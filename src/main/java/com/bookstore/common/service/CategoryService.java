@@ -10,5 +10,8 @@ public interface CategoryService {
     public void deleteCategory(Category category);
     public List<Category> retrieveAllParentCategory();
     public Category retrieveByCategoryName(String name);
-    public List<Category> retrieveByParentId(Integer parentId);
+    public List<Category> retrieveCategoriesByParentId(Integer parentId);
+    List<Category> retrieveCategoriesByBooksId(Integer bookId);
+    void deleteBookCategoriesByBookId(Integer bookId);
+    Category retrieveById(Integer id);
 }

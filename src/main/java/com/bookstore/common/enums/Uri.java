@@ -38,6 +38,7 @@ public class Uri {
     public static final String ORDERS_ORDER_ITEMS = "/api/v1/orders/items";
 
     /* Category */
+    public static final String CATEGORIES = "/api/v1/categories";
     public static final String CHILD_CATEGORIES = "/api/v1/categories/children";
     public static final String PARENT_CATEGORIES = "/api/v1/categories/parents";
 

@@ -10,6 +10,8 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
 @Table(name = "book_details")
@@ -43,6 +45,15 @@ public class BookDetails extends Common {
 
     /* <------------------ Entity Method -------------------> */
 
+    public BookDetails(String publisher, LocalDate publicationDate, String dimension, String coverType, Integer numberOfPages, String publishingHouse, String description) {
+        this.publisher = publisher;
+        this.publicationDate = publicationDate;
+        Dimension = dimension;
+        this.coverType = coverType;
+        this.numberOfPages = numberOfPages;
+        this.publishingHouse = publishingHouse;
+        this.description = description;
+    }
 
     /* <------------------ Mapping --------------------> */
 

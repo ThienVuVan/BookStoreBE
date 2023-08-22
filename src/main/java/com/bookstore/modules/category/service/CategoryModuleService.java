@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CategoryModuleService {
     private final CategoryMapper categoryMapper;
-    public List<CategoryDto> CategoryToCategoryDto(List<Category> categories){
+    public List<CategoryDto> convertToListCategoryDto(List<Category> categories){
         return categories.stream().map(category -> categoryMapper.CategoryToCategoryDto(category)).collect(Collectors.toList());
     }
 }

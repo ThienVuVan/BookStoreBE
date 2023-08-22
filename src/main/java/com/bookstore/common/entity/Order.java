@@ -7,11 +7,14 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.validator.constraints.Length;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
 @Table(name = "orders")
@@ -38,15 +41,22 @@ public class Order extends Common {
 
     @NotNull
     @Column(name = "order_status")
-    Boolean orderStatus;
+    String orderStatus;
 
     /* <---------- Entity Method -----------> */
 
-    public Order(LocalDate date, Double totalPrice, String deliveryAddress, Boolean orderStatus) {
+    public Order(LocalDate date, Double totalPrice, String deliveryAddress, String orderStatus) {
         this.date = date;
         this.totalPrice = totalPrice;
         DeliveryAddress = deliveryAddress;
         this.orderStatus = orderStatus;
+    }
+
+    /* <---------------------- Convenience Method ---------------------> */
+    public void addOrderItem(OrderItem orderItem){
+        if(orderItems == null) orderItems = new HashSet<>();
+        orderItems.add(orderItem);
+        orderItem.setOrder(this);
     }
     @Override
     public String toString() {

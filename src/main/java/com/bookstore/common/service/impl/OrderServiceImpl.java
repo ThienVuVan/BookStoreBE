@@ -1,6 +1,7 @@
 package com.bookstore.common.service.impl;
 
 import com.bookstore.common.entity.Order;
+import com.bookstore.common.entity.OrderItem;
 import com.bookstore.common.repository.OrderRepository;
 import com.bookstore.common.service.OrderService;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +35,12 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Optional<Order> retrieveById(Integer id) {
-        return orderRepository.findById(id);
+    public Order retrieveById(Integer id) {
+        return orderRepository.findOrderById(id);
+    }
+
+    @Override
+    public List<OrderItem> retrieveOrderItemsByOrderId(Integer orderId) {
+        return orderRepository.findOrderItemsByOrderId(orderId);
     }
 }

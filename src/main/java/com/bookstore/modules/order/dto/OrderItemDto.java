@@ -1,19 +1,16 @@
 package com.bookstore.modules.order.dto;
 
+import com.bookstore.modules.book.dto.BookDto;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
-import java.time.LocalDate;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class OrderDto {
+public class OrderItemDto {
     Integer id;
-    LocalDate date;
-    Double totalPrice;
-    String DeliveryAddress;
-    String ordeStatus;
+    BookDto bookDto;
+    Integer quantity;
 }

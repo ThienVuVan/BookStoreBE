@@ -1,10 +1,8 @@
 package com.bookstore.modules.shop.api;
 
-import com.bookstore.common.entity.BookImage;
-import com.bookstore.common.entity.Order;
-import com.bookstore.common.entity.Shop;
-import com.bookstore.common.entity.User;
+import com.bookstore.common.entity.*;
 import com.bookstore.common.enums.Uri;
+import com.bookstore.common.service.ShopDetailsService;
 import com.bookstore.common.service.ShopService;
 import com.bookstore.common.service.UserService;
 import com.bookstore.modules.book.dto.BookDto;
@@ -31,6 +29,7 @@ import java.util.List;
 public class ShopController {
     private final UserService userService;
     private final ShopService shopService;
+    private final ShopDetailsService shopDetailsService;
     private final ShopModuleService shopModuleService;
     private final OrderModuleService orderModuleService;
     private final BookModuleService bookModuleService;
@@ -103,15 +102,32 @@ public class ShopController {
     }
     @PostMapping(value = {Uri.SHOPS_DETAILS})
     public ResponseEntity<?> CreateShopDetailForShop(@RequestParam Integer shopId, @Valid @RequestBody ShopDetailsRequest shopDetailsRequest){
-        return null;
+        Shop shop = shopService.retrieveShopById(shopId);
+        ShopDetails shopDetails = shopDetailsService.saveShopDetails(ShopDetails.builder()
+                .description(shopDetailsRequest.getDescription())
+                .operationHours(shopDetailsRequest.getOperationHours())
+                .shippingPolicy(shopDetailsRequest.getShippingPolicy())
+                .returnPolicy(shopDetailsRequest.getReturnPolicy())
+                .build());
+        shop.addShopDetails(shopDetails);
+        shopService.updateShop(shop);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
     @PutMapping(value = {Uri.SHOPS_DETAILS})
     public ResponseEntity<?> UpdateShopDetailForShop(@RequestParam Integer shopId, @Valid @RequestBody ShopDetailsRequest shopDetailsRequest){
-        return null;
+        ShopDetails shopDetails = shopService.retrieveShopDetailsByShopId(shopId);
+        shopDetails.setDescription(shopDetailsRequest.getDescription());
+        shopDetails.setOperationHours(shopDetailsRequest.getOperationHours());
+        shopDetails.setShippingPolicy(shopDetailsRequest.getShippingPolicy());
+        shopDetails.setReturnPolicy(shopDetailsRequest.getReturnPolicy());
+        shopDetailsService.updateShopDetails(shopDetails);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
     @DeleteMapping(value = {Uri.SHOPS_DETAILS})
     public ResponseEntity<?> DeleteShopDetailForShop(@RequestParam Integer shopId){
-        return null;
+        ShopDetails shopDetails = shopService.retrieveShopDetailsByShopId(shopId);
+        shopDetailsService.deleteShopDetails(shopDetails);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 

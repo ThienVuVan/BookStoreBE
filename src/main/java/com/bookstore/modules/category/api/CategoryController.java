@@ -23,46 +23,42 @@ public class CategoryController {
 
     @GetMapping(value = {Uri.PARENT_CATEGORIES})
     public ResponseEntity<?> RetrieveAllParentCategory() {
-        return ResponseEntity.ok(categoryModuleService.CategoryToCategoryDto(categoryService.retrieveAllParentCategory()));
+        return ResponseEntity.ok(categoryModuleService.convertToListCategoryDto(categoryService.retrieveAllParentCategory()));
     }
 
     @GetMapping(value = {Uri.CHILD_CATEGORIES})
-    public ResponseEntity<?> RetrieveAllChildCategoryByParentName(@RequestParam Integer parentId){
-        return null;
+    public ResponseEntity<?> RetrieveAllChildCategoryByParentId(@RequestParam Integer parentId){
+        List<CategoryDto> categoryDtos = categoryModuleService.convertToListCategoryDto(
+                categoryService.retrieveCategoriesByParentId(parentId));
+        return new ResponseEntity<>(categoryDtos, HttpStatus.OK);
     }
 
-    @PostMapping(value = {Uri.PARENT_CATEGORIES})
-    public ResponseEntity<?> CreateParentCategory(@RequestParam String newName){
-        Category category = new Category(newName, null);
+    @PostMapping(value = {Uri.CATEGORIES})
+    public ResponseEntity<?> CreateCategory(@Valid @RequestBody CategoryRequest categoryRequest){
+        Category category = new Category(categoryRequest.getName(), categoryRequest.getParenId());
         categoryService.saveCategory(category);
         return new ResponseEntity(HttpStatus.CREATED);
     }
 
-    @PostMapping(value = {Uri.CHILD_CATEGORIES})
-    public ResponseEntity<?> CreateChildCategory(@Valid @RequestBody CategoryRequest categoryRequest){
-//        Category parentCategory = categoryService.retrieveByCategoryName(parentName);
-//        Category childCategory = new Category(childName, parentCategory.getId());
-//        categoryService.saveCategory(childCategory);
-        return new ResponseEntity(HttpStatus.CREATED);
-    }
-
-    @PutMapping(value = {Uri.PARENT_CATEGORIES})
-    public ResponseEntity<?> UpdateParentCategory(@RequestParam String oldName, @RequestParam String newName){
-        return new ResponseEntity(HttpStatus.OK);
-    }
-
-    @PutMapping(value = {Uri.CHILD_CATEGORIES})
-    public ResponseEntity<?> UpdateChildCategory(@RequestParam String oldName, @RequestParam String newName){
+    @PutMapping(value = {Uri.CATEGORIES})
+    public ResponseEntity<?> UpdateCategory(@RequestParam Integer id, @RequestParam String newName){
+        Category category = categoryService.retrieveById(id);
+        category.setName(newName);
+        categoryService.updateCategory(category);
         return new ResponseEntity(HttpStatus.OK);
     }
 
     @DeleteMapping(value = {Uri.PARENT_CATEGORIES})
-    public ResponseEntity<?> DeleteParentCategory(@RequestParam Integer parentId){
+    public ResponseEntity<?> DeleteParentCategory(@RequestParam Integer id){
+        Category category = categoryService.retrieveById(id);
+        categoryService.retrieveCategoriesByParentId(id).stream().forEach(category1 -> categoryService.deleteCategory(category1));
+        categoryService.deleteCategory(category);
         return new ResponseEntity(HttpStatus.OK);
     }
 
     @DeleteMapping(value = {Uri.CHILD_CATEGORIES})
-    public ResponseEntity<?> DeleteChildCategory(@RequestParam String childName){
+    public ResponseEntity<?> DeleteChildCategory(@RequestParam Integer id){
+        categoryService.deleteCategory(categoryService.retrieveById(id));
         return new ResponseEntity(HttpStatus.OK);
     }
 }

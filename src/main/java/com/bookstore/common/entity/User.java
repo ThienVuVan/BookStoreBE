@@ -81,6 +81,10 @@ public class User extends Common {
         setShop(shop);
         shop.setUser(this);
     }
+    public void addReview(Review review){
+        if(reviews == null) reviews = new HashSet<>();
+        reviews.add(review);
+    }
 
     /* <------------- Mapping -------------> */
 

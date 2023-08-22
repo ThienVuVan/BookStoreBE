@@ -1,6 +1,7 @@
 package com.bookstore.common.service.impl;
 
 import com.bookstore.common.entity.Rate;
+import com.bookstore.common.entity.compositekey.UserBookKey;
 import com.bookstore.common.repository.RateRepository;
 import com.bookstore.common.service.RateService;
 import lombok.RequiredArgsConstructor;
@@ -31,5 +32,15 @@ public class RateServiceImpl implements RateService {
     @Override
     public void deleteRate(Rate rate) {
         rateRepository.delete(rate);
+    }
+
+    @Override
+    public Rate retrieveRateById(UserBookKey id) {
+        return rateRepository.findRateById(id);
+    }
+
+    @Override
+    public Integer countRateByBookIdAndRating(Integer bookId, Integer rating) {
+        return rateRepository.countRateByBookIdAndRating(bookId, rating);
     }
 }

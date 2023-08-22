@@ -37,7 +37,7 @@ public class OrderItem extends Common {
 
     /* <-------------- Entity Method ----------------> */
 
-    public OrderItem(Order order, Book book, Integer quantity) {
+    public OrderItem(Book book, Integer quantity) {
         this.order = order;
         this.book = book;
         this.quantity = quantity;

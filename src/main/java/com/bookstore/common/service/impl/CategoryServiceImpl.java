@@ -43,7 +43,22 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public List<Category> retrieveByParentId(Integer parentId) {
+    public List<Category> retrieveCategoriesByParentId(Integer parentId) {
         return categoryRepository.findCategoriesByParentId(parentId);
+    }
+
+    @Override
+    public List<Category> retrieveCategoriesByBooksId(Integer bookId) {
+        return categoryRepository.findCategoriesByBooksId(bookId);
+    }
+
+    @Override
+    public void deleteBookCategoriesByBookId(Integer bookId) {
+        categoryRepository.deleteBookCategoriesByBookId(bookId);
+    }
+
+    @Override
+    public Category retrieveById(Integer id) {
+        return categoryRepository.findCategoryById(id);
     }
 }
