@@ -5,6 +5,7 @@ import com.bookstore.common.entity.User;
 import com.bookstore.common.enums.Constant;
 import com.bookstore.common.enums.Uri;
 import com.bookstore.common.security.service.TokenAuthenticationService;
+import com.bookstore.common.security.service.UserDetailsImpl;
 import com.bookstore.common.service.RoleService;
 import com.bookstore.common.service.UserService;
 import com.bookstore.modules.auth.request.LoginRequest;
@@ -41,13 +42,14 @@ public class AuthController {
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword());
         Authentication authentication = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        Authentication user = SecurityContextHolder.getContext().getAuthentication();
-        List<String> listToken = new TokenAuthenticationService().generateToken(user.getName());
+        UserDetailsImpl user = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        List<String> listToken = new TokenAuthenticationService().generateToken(user.getUsername());
         return ResponseEntity.ok(new JwtResponse(
+                user.getId(),
+                user.getUsername(),
+                user.getAuthorities().stream().map(item -> item.getAuthority()).collect(Collectors.toList()),
                 listToken.get(0),
-                listToken.get(1),
-                user.getName(),
-                user.getAuthorities().stream().map(item -> item.getAuthority()).collect(Collectors.toList())
+                listToken.get(1)
                 ));
     }
 

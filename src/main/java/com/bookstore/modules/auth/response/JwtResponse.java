@@ -9,8 +9,9 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class JwtResponse {
-    private String token;
-    private String refreshToken;
+    private Integer id;
     private String username;
     private List<String> roles;
+    private String token;
+    private String refreshToken;
 }

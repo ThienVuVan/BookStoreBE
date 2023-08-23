@@ -8,20 +8,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @SpringBootApplication
 public class BookStoreApplication {
-    @Bean
-    public WebMvcConfigurer mvcConfigurer(){
-        // Cross Origin Request
-        // http://localhost:3000/ to 8080
-        return new WebMvcConfigurer() {
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**")
-                        .allowedMethods("*")
-                        .allowedOrigins("http://localhost:3000");
-            }
-        };
 
-    }
 
     public static void main(String[] args) {
         SpringApplication.run(BookStoreApplication.class, args);

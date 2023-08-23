@@ -3,6 +3,7 @@ package com.bookstore.modules.user.api;
 import com.bookstore.common.entity.*;
 import com.bookstore.common.entity.compositekey.UserBookKey;
 import com.bookstore.common.enums.Uri;
+import com.bookstore.common.security.service.TokenAuthenticationService;
 import com.bookstore.common.service.BookService;
 import com.bookstore.common.service.RateService;
 import com.bookstore.common.service.ReviewService;
@@ -11,6 +12,7 @@ import com.bookstore.modules.order.dto.OrderDto;
 import com.bookstore.modules.order.service.OrderModuleService;
 import com.bookstore.modules.user.dto.UserDto;
 import com.bookstore.modules.user.request.*;
+import com.bookstore.modules.user.response.UpdateUserResponse;
 import com.bookstore.modules.user.service.UserModuleService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -49,8 +51,17 @@ public class UserController {
         user.setUsername(userUpdateRequest.getUsername());
         user.setPhoneNumber(userUpdateRequest.getPhoneNumber());
         user.setEmail(userUpdateRequest.getEmail());
-        userService.updateUser(user);
-        return new ResponseEntity(HttpStatus.OK);
+        User user1 = userService.updateUser(user);
+        List<String> listToken = new TokenAuthenticationService().generateToken(user1.getUsername());
+        UpdateUserResponse updateUserResponse = UpdateUserResponse.builder()
+                .id(user1.getId())
+                .username(user.getUsername())
+                .phoneNumber(user1.getPhoneNumber())
+                .email(user1.getEmail())
+                .token(listToken.get(0))
+                .refreshToken(listToken.get(1))
+                .build();
+        return new ResponseEntity(updateUserResponse, HttpStatus.OK);
     }
 
     // non - test
