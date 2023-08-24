@@ -2,6 +2,7 @@ package com.bookstore.modules.shop.api;
 
 import com.bookstore.common.entity.*;
 import com.bookstore.common.enums.Uri;
+import com.bookstore.common.service.RoleService;
 import com.bookstore.common.service.ShopDetailsService;
 import com.bookstore.common.service.ShopService;
 import com.bookstore.common.service.UserService;
@@ -23,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -33,6 +35,7 @@ public class ShopController {
     private final ShopModuleService shopModuleService;
     private final OrderModuleService orderModuleService;
     private final BookModuleService bookModuleService;
+    private final RoleService roleService;
     // non - test
     @GetMapping(value = {Uri.SHOPS})
     public ResponseEntity<?> RetrieveShopByUserId(@RequestParam Integer userId){
@@ -42,13 +45,16 @@ public class ShopController {
 
     // non - test
     @PostMapping (value = {Uri.SHOPS})
-    public ResponseEntity<?> CreateShopForUser(@RequestBody MultipartFile shopLogo, @Valid @RequestBody ShopRequest shopRequest){
-        String fileName = "image_" + System.currentTimeMillis() + shopLogo.getOriginalFilename();
-        String imagePath = "D:/Projects/BookStoreImages/" + fileName;
-        try {
-            shopLogo.transferTo(new File(imagePath));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+    public ResponseEntity<?> CreateShopForUser(@RequestBody(required = false) MultipartFile shopLogo, @Valid @RequestBody ShopRequest shopRequest){
+        String imagePath = null;
+        if(shopLogo != null){
+            String fileName = "image_" + System.currentTimeMillis() + shopLogo.getOriginalFilename();
+            imagePath = "D:/Projects/BookStoreImages/" + fileName;
+            try {
+                shopLogo.transferTo(new File(imagePath));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
         Shop shop = Shop.builder()
                 .shopLogoPath(imagePath)
@@ -57,11 +63,15 @@ public class ShopController {
                 .contactPhone(shopRequest.getContactPhone())
                 .contactEmail(shopRequest.getContactEmail())
                 .build();
-        shopService.saveShop(shop);
         User user = userService.retrieveUserById(shopRequest.getUserId());
-        Shop shop1 = shopService.retrieveShopByShopName(shopRequest.getShopName());
+        Shop shop1 = shopService.saveShop(shop);
         user.addShop(shop1);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        Role role = roleService.retrieveByName("ROLE_SHOP").get();
+        user.addRole(role);
+        userService.updateUser(user);
+        List<String> roles = roleService.retrieveRoleByUserName(user.getUsername())
+                .stream().map(role1 -> new String(role1.getName())).collect(Collectors.toList());
+        return new ResponseEntity<>(roles,HttpStatus.CREATED);
     }
 
     // non - test

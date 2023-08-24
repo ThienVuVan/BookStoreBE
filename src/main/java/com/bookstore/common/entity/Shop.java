@@ -26,7 +26,6 @@ public class Shop extends Common {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
 
-    @NotNull
     @Lob
     @Column(name = "shop_logo_path")
     String shopLogoPath;
