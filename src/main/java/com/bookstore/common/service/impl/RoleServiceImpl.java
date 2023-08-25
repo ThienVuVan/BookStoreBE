@@ -42,4 +42,9 @@ public class RoleServiceImpl implements RoleService {
     public List<Role> retrieveRoleByUserName(String username) {
         return roleRepository.findRoleByUserName(username);
     }
+
+    @Override
+    public List<Role> retrieveRolesByUserId(Integer userId) {
+        return roleRepository.findRolesByUserId(userId);
+    }
 }

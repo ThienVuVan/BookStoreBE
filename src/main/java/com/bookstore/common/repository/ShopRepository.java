@@ -11,6 +11,8 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface ShopRepository extends JpaRepository<Shop, Integer> {
+    @Query("from Shop s where s.id = :id")
+    Shop findShopById(Integer id);
     Shop findShopByUserId(Integer id);
     Shop findShopByShopName(String name);
     @Query("select d, s from Shop s join fetch s.shopDetails d where s.id = :id")

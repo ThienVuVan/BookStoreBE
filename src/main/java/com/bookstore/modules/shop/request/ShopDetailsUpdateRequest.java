@@ -10,7 +10,7 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ShopDetailsRequest {
+public class ShopDetailsUpdateRequest {
     String description;
     String operationHours;
     String shippingPolicy;

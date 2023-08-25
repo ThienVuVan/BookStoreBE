@@ -12,4 +12,5 @@ public interface RoleService {
     public void deleteRole(Role role);
     public Optional<Role> retrieveByName(String name);
     public List<Role> retrieveRoleByUserName(String username);
+    public List<Role> retrieveRolesByUserId(Integer userId);
 }

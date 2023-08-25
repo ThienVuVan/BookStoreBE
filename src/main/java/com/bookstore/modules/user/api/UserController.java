@@ -54,10 +54,7 @@ public class UserController {
         User user1 = userService.updateUser(user);
         List<String> listToken = new TokenAuthenticationService().generateToken(user1.getUsername());
         UpdateUserResponse updateUserResponse = UpdateUserResponse.builder()
-                .id(user1.getId())
-                .username(user.getUsername())
-                .phoneNumber(user1.getPhoneNumber())
-                .email(user1.getEmail())
+                .username(user1.getUsername())
                 .token(listToken.get(0))
                 .refreshToken(listToken.get(1))
                 .build();

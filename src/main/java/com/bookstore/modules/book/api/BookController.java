@@ -72,7 +72,7 @@ public class BookController {
                                            @Valid @RequestBody BookRequest bookRequest,
                                            @Valid @RequestBody BookDetailsRequest bookDetailsRequest,
                                            @RequestBody List<String> listAuthor,
-                                           @RequestBody List<String> listCategory,
+                                           @RequestBody(required = false) List<String> listCategory,
                                            @RequestBody List<MultipartFile> listImage){
         Shop shop = shopService.retrieveShopById(shopId);
         // save book;

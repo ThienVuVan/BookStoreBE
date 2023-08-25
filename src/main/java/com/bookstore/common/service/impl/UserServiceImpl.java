@@ -57,4 +57,9 @@ public class UserServiceImpl implements UserService {
     public List<Order> retrieveOrdersByUserId(Integer id) {
         return userRepository.findOrderByUserId(id);
     }
+
+    @Override
+    public void deleteRoleForUser(Integer userId, Integer roleId) {
+        userRepository.deleteRoleForUser(userId, roleId);
+    }
 }

@@ -16,5 +16,5 @@ public interface UserService {
     public Boolean isExistEmail(String email);
     public Boolean isExistPhoneNumber(String phoneNumber);
     public List<Order> retrieveOrdersByUserId(Integer id);
-
+    void deleteRoleForUser(Integer userId, Integer roleId);
 }

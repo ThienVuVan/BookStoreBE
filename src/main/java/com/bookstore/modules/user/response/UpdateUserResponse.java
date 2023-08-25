@@ -10,10 +10,7 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UpdateUserResponse {
-    Integer id;
     String username;
-    String phoneNumber;
-    String email;
     String token;
     String refreshToken;
 }

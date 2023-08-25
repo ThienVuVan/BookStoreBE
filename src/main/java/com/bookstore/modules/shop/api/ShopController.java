@@ -36,14 +36,13 @@ public class ShopController {
     private final OrderModuleService orderModuleService;
     private final BookModuleService bookModuleService;
     private final RoleService roleService;
-    // non - test
+
     @GetMapping(value = {Uri.SHOPS})
     public ResponseEntity<?> RetrieveShopByUserId(@RequestParam Integer userId){
         ShopDto shop = shopModuleService.convertToShopDto(shopService.retrieveShopByUserId(userId));
         return new ResponseEntity<>(shop, HttpStatus.OK);
     }
 
-    // non - test
     @PostMapping (value = {Uri.SHOPS})
     public ResponseEntity<?> CreateShopForUser(@RequestBody(required = false) MultipartFile shopLogo, @Valid @RequestBody ShopRequest shopRequest){
         String imagePath = null;
@@ -56,19 +55,34 @@ public class ShopController {
                 throw new RuntimeException(e);
             }
         }
-        Shop shop = Shop.builder()
-                .shopLogoPath(imagePath)
-                .shopName(shopRequest.getShopName())
-                .shopAddress(shopRequest.getShopAddress())
-                .contactPhone(shopRequest.getContactPhone())
-                .contactEmail(shopRequest.getContactEmail())
-                .build();
+        Shop shop = shopService.saveShop(
+            Shop.builder()
+                    .shopLogoPath(imagePath)
+                    .shopName(shopRequest.getShopName())
+                    .shopAddress(shopRequest.getShopAddress())
+                    .contactPhone(shopRequest.getContactPhone())
+                    .contactEmail(shopRequest.getContactEmail())
+                    .build()
+        );
+        ShopDetails shopDetails = shopDetailsService.saveShopDetails(
+            ShopDetails.builder()
+                    .description(shopRequest.getDescription())
+                    .operationHours(shopRequest.getOperationHours())
+                    .shippingPolicy(shopRequest.getShippingPolicy())
+                    .returnPolicy(shopRequest.getReturnPolicy())
+                    .build()
+        ) ;
+        // add shopDetails
+        shop.addShopDetails(shopDetails);
+        shopService.updateShop(shop);
+        // add shop for user
         User user = userService.retrieveUserById(shopRequest.getUserId());
-        Shop shop1 = shopService.saveShop(shop);
-        user.addShop(shop1);
+        user.addShop(shop);
+        // add role for user
         Role role = roleService.retrieveByName("ROLE_SHOP").get();
         user.addRole(role);
         userService.updateUser(user);
+        // get role return for fe;
         List<String> roles = roleService.retrieveRoleByUserName(user.getUsername())
                 .stream().map(role1 -> new String(role1.getName())).collect(Collectors.toList());
         return new ResponseEntity<>(roles,HttpStatus.CREATED);
@@ -76,30 +90,42 @@ public class ShopController {
 
     // non - test
     @PutMapping(value = {Uri.SHOPS})
-    public ResponseEntity<?> UpdateShopForUser(@RequestBody MultipartFile shopLogo, @Valid @RequestBody ShopRequest shopRequest ){
-        String fileName = "image_" + System.currentTimeMillis() + shopLogo.getOriginalFilename();
-        String imagePath = "D:/Projects/BookStoreImages/" + fileName;
-        try {
-            shopLogo.transferTo(new File(imagePath));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+    public ResponseEntity<?> UpdateShopForUser(@RequestBody(required = false) MultipartFile shopLogo, @Valid @RequestBody ShopUpdateRequest shopUpdateRequest ){
+        String imagePath = null;
+        if(shopLogo != null){
+            String fileName = "image_" + System.currentTimeMillis() + shopLogo.getOriginalFilename();
+            imagePath = "D:/Projects/BookStoreImages/" + fileName;
+            try {
+                shopLogo.transferTo(new File(imagePath));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
-        Shop shop = shopService.retrieveShopByShopName(shopRequest.getShopName());
+        Shop shop = shopService.retrieveShopByUserId(shopUpdateRequest.getUserId());
         shop.setShopLogoPath(imagePath);
-        shop.setShopName(shopRequest.getShopName());
-        shop.setShopAddress(shopRequest.getShopAddress());
-        shop.setContactPhone(shopRequest.getContactPhone());
-        shop.setContactEmail(shopRequest.getContactEmail());
+        shop.setShopName(shopUpdateRequest.getShopName());
+        shop.setShopAddress(shopUpdateRequest.getShopAddress());
+        shop.setContactPhone(shopUpdateRequest.getContactPhone());
+        shop.setContactEmail(shopUpdateRequest.getContactEmail());
         shopService.updateShop(shop);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    // non - test
     @DeleteMapping(value = {Uri.SHOPS})
-    public ResponseEntity<?> DeleteShopByUserId(@RequestParam Integer userId){
-        Shop shop = shopService.retrieveShopByUserId(userId);
+    public ResponseEntity<?> DeleteShopByUserId(@RequestParam Integer userId, @RequestParam Integer shopId){
+        // set shop for user
+        User user = userService.retrieveUserById(userId);
+        user.setShop(null);
+        userService.updateUser(user);
+        // delete user role
+        userService.deleteRoleForUser(userId, 2);
+        // delete shop
+        Shop shop = shopService.retrieveShopById(shopId);
         shopService.deleteShop(shop);
-        return new ResponseEntity<>(HttpStatus.OK);
+        // update role
+        List<String> roles = roleService.retrieveRolesByUserId(userId)
+                .stream().map(role -> new String(role.getName())).collect(Collectors.toList());
+        return new ResponseEntity<>(roles, HttpStatus.OK);
     }
 
 
@@ -110,26 +136,14 @@ public class ShopController {
         ShopDetailsDto shopDetailsDto = shopModuleService.convertToShopDetailsDto(shopService.retrieveShopDetailsByShopId(shopId));
         return new ResponseEntity<>(shopDetailsDto, HttpStatus.OK);
     }
-    @PostMapping(value = {Uri.SHOPS_DETAILS})
-    public ResponseEntity<?> CreateShopDetailForShop(@RequestParam Integer shopId, @Valid @RequestBody ShopDetailsRequest shopDetailsRequest){
-        Shop shop = shopService.retrieveShopById(shopId);
-        ShopDetails shopDetails = shopDetailsService.saveShopDetails(ShopDetails.builder()
-                .description(shopDetailsRequest.getDescription())
-                .operationHours(shopDetailsRequest.getOperationHours())
-                .shippingPolicy(shopDetailsRequest.getShippingPolicy())
-                .returnPolicy(shopDetailsRequest.getReturnPolicy())
-                .build());
-        shop.addShopDetails(shopDetails);
-        shopService.updateShop(shop);
-        return new ResponseEntity<>(HttpStatus.CREATED);
-    }
+
     @PutMapping(value = {Uri.SHOPS_DETAILS})
-    public ResponseEntity<?> UpdateShopDetailForShop(@RequestParam Integer shopId, @Valid @RequestBody ShopDetailsRequest shopDetailsRequest){
+    public ResponseEntity<?> UpdateShopDetailForShop(@RequestParam Integer shopId, @Valid @RequestBody ShopDetailsUpdateRequest shopDetailsUpdateRequest){
         ShopDetails shopDetails = shopService.retrieveShopDetailsByShopId(shopId);
-        shopDetails.setDescription(shopDetailsRequest.getDescription());
-        shopDetails.setOperationHours(shopDetailsRequest.getOperationHours());
-        shopDetails.setShippingPolicy(shopDetailsRequest.getShippingPolicy());
-        shopDetails.setReturnPolicy(shopDetailsRequest.getReturnPolicy());
+        shopDetails.setDescription(shopDetailsUpdateRequest.getDescription());
+        shopDetails.setOperationHours(shopDetailsUpdateRequest.getOperationHours());
+        shopDetails.setShippingPolicy(shopDetailsUpdateRequest.getShippingPolicy());
+        shopDetails.setReturnPolicy(shopDetailsUpdateRequest.getReturnPolicy());
         shopDetailsService.updateShopDetails(shopDetails);
         return new ResponseEntity<>(HttpStatus.OK);
     }
