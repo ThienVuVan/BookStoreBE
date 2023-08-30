@@ -14,4 +14,5 @@ public class BookDto {
     Double price;
     Integer currentQuantity;
     Integer soldQuantity;
+    String imagePath;
 }

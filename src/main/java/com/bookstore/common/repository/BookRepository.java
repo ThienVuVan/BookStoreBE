@@ -4,7 +4,9 @@ import com.bookstore.common.entity.Author;
 import com.bookstore.common.entity.Book;
 import com.bookstore.common.entity.BookDetails;
 import com.bookstore.common.entity.BookImage;
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
@@ -12,6 +14,7 @@ import java.util.List;
 public interface BookRepository extends JpaRepository<Book, Integer> {
     Book findByTitle(String title);
     Book findBookById(Integer id);
+    List<Book> findBookByShopId(Integer shopId);
     @Query("select i, b from Book b join fetch b.bookImages i where b.id = :id")
     List<BookImage> findBookImageByBookId(Integer id);
     @Query("""
@@ -27,4 +30,8 @@ public interface BookRepository extends JpaRepository<Book, Integer> {
     List<BookImage> findBookImagesByBookId(Integer id);
     @Query("select a from Author a join fetch a.books b where b.id = :id")
     List<Author> findAuthorsByBookId(Integer id);
+    @Modifying
+    @Transactional
+    @Query(value = "delete from books_categories bc where bc.book_id = :bookId", nativeQuery = true)
+    void deleteBookCategory(Integer bookId);
 }

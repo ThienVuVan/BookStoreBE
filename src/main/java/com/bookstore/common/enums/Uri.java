@@ -20,6 +20,7 @@ public class Uri {
     public static final String BOOKS = "/api/v1/books";
     public static final String BOOKS_PAGE = "/api/v1/books/pages";
     public static final String BOOKS_FILTER = "/api/v1/books/filter";
+    public static final String BOOKS_SHOP = "/api/v1/books/shop";
     public static final String BOOKS_DETAILS = "/api/v1/books/details";
     public static final String BOOKS_IMAGES = "/api/v1/books/images";
     public static final String BOOKS_AUTHORS = "/api/v1/books/authors";

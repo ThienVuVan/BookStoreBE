@@ -25,5 +25,7 @@ public interface BookService {
     public BookDetails retrieveBookDetailsByBookId(Integer id);
     public List<BookImage> retrieveBookImagesByBookId(Integer id);
     public List<Author> retrieveAuthorsByBookId(Integer id);
+    public List<Book> retrieveBookByShopId(Integer shopId);
+    public void deleteBookCategory(Integer bookId);
 
 }

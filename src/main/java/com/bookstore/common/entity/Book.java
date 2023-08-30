@@ -36,7 +36,6 @@ public class Book extends Common {
     @Column(name = "current_quantity")
     Integer currentQuantity;
 
-    @NotNull
     @Range(max = 10000, min = 0)
     @Column(name = "sold_quantity")
     Integer soldQuantity;
@@ -131,9 +130,9 @@ public class Book extends Common {
     Set<Rate> rates;
 
     /* To BookCategory */
-    /* Delete Book, Delete Category, Update Later */
+    /* Delete Book, Delete books_categories */
     @JsonIgnore
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinTable(name = "books_categories",
     joinColumns = @JoinColumn(name = "book_id"),
     inverseJoinColumns = @JoinColumn(name = "category_id"))
@@ -151,6 +150,6 @@ public class Book extends Common {
     /* To OrderItem */
     /* Delete Book, Delete Order */
     @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "book", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "book", cascade = CascadeType.PERSIST)
     Set<OrderItem> orderItems;
 }

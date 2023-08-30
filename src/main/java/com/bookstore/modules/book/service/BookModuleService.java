@@ -33,12 +33,6 @@ public class BookModuleService {
     public List<BookDto> convertPageToListBookDto(Page<Book> page){
         return page.getContent().stream().map(book -> bookMapper.BookToBookDto(book)).collect(Collectors.toList());
     }
-    public BookDetailsDto convertToBookDetailsDto(BookDetails bookDetails){
-        return bookDetailsMapper.BookDetailsToDto(bookDetails);
-    }
-    public List<AuthorDto> convertToListAuthorDto(List<Author> authors){
-        return authors.stream().map(author -> authorMapper.AuthorToDto(author)).collect(Collectors.toList());
-    }
     public List<ReviewDto> convertToListReviewDto(Page<Review> reviews){
         return reviews.getContent().stream().map(review ->
             reviewMapper.ReviewToDto(review)

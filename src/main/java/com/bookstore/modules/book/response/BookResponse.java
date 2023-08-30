@@ -1,9 +1,8 @@
-package com.bookstore.modules.book.request;
+package com.bookstore.modules.book.response;
 
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.*;
@@ -19,34 +18,22 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class BookRequest {
-    @NotBlank
-    @Length(min = 1)
+public class BookResponse {
+    Integer id;
     String title;
-
-    @NotNull
-    @PositiveOrZero
     Double price;
-
-    @NotNull
-    @Range(max = 10000, min = 0)
     Integer currentQuantity;
-
+    Integer soldQuantity;
     String publisher;
-
-    @Temporal(TemporalType.DATE)
     LocalDate publicationDate;
-
     String dimension;
     String coverType;
     Integer numberOfPages;
     String publishingHouse;
     String description;
-    @NotNull
     String author;
-    @NotNull
-    Integer categoryId;
-    @NotEmpty
-    List<MultipartFile> images;
+    String category;
+    List<String> images;
 }

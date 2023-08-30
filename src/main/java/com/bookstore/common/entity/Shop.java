@@ -10,6 +10,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.validator.constraints.Length;
 
+import java.util.HashSet;
 import java.util.Set;
 
 
@@ -50,6 +51,12 @@ public class Shop extends Common {
     public void addShopDetails(ShopDetails shopDetails){
         setShopDetails(shopDetails);
         shopDetails.setShop(this);
+    }
+
+    public void addBook(Book book){
+        if(books == null) books = new HashSet<>();
+        books.add(book);
+        book.setShop(this);
     }
 
     /* <------------------ Entity Method -------------------> */

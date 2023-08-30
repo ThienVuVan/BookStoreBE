@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.validator.constraints.Length;
+import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @Setter
@@ -26,4 +27,5 @@ public class ShopUpdateRequest {
     String contactPhone;
     @Email
     String contactEmail;
+    MultipartFile shopLogo;
 }

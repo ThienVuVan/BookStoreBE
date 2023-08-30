@@ -8,13 +8,16 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.validator.constraints.Length;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.Serializable;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ShopRequest {
+public class ShopRequest implements Serializable {
     @NotNull
     Integer userId;
     @NotBlank
@@ -25,9 +28,10 @@ public class ShopRequest {
     String contactPhone;
     @Email
     String contactEmail;
-
     String description;
     String operationHours;
     String shippingPolicy;
     String returnPolicy;
+    @NotNull
+    MultipartFile shopLogo;
 }

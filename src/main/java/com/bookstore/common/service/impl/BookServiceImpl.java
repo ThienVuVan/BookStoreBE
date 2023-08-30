@@ -76,4 +76,14 @@ public class BookServiceImpl implements BookService {
     public List<Author> retrieveAuthorsByBookId(Integer id) {
         return bookRepository.findAuthorsByBookId(id);
     }
+
+    @Override
+    public List<Book> retrieveBookByShopId(Integer shopId) {
+        return bookRepository.findBookByShopId(shopId);
+    }
+
+    @Override
+    public void deleteBookCategory(Integer bookId) {
+        bookRepository.deleteBookCategory(bookId);
+    }
 }

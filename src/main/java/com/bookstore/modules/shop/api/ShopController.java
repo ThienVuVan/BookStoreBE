@@ -17,6 +17,7 @@ import com.bookstore.modules.shop.service.ShopModuleService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -44,16 +45,14 @@ public class ShopController {
     }
 
     @PostMapping (value = {Uri.SHOPS})
-    public ResponseEntity<?> CreateShopForUser(@RequestBody(required = false) MultipartFile shopLogo, @Valid @RequestBody ShopRequest shopRequest){
-        String imagePath = null;
-        if(shopLogo != null){
-            String fileName = "image_" + System.currentTimeMillis() + shopLogo.getOriginalFilename();
-            imagePath = "D:/Projects/BookStoreImages/" + fileName;
-            try {
-                shopLogo.transferTo(new File(imagePath));
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+    public ResponseEntity<?> CreateShopForUser(@Valid @ModelAttribute ShopRequest shopRequest){
+        // set sh
+        String fileName = "image_" + System.currentTimeMillis() + shopRequest.getShopLogo().getOriginalFilename();
+        String imagePath = "D:/Projects/BookStoreFE/public/images/" + fileName;
+        try {
+            shopRequest.getShopLogo().transferTo(new File(imagePath));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
         Shop shop = shopService.saveShop(
             Shop.builder()
@@ -90,19 +89,19 @@ public class ShopController {
 
     // non - test
     @PutMapping(value = {Uri.SHOPS})
-    public ResponseEntity<?> UpdateShopForUser(@RequestBody(required = false) MultipartFile shopLogo, @Valid @RequestBody ShopUpdateRequest shopUpdateRequest ){
-        String imagePath = null;
-        if(shopLogo != null){
-            String fileName = "image_" + System.currentTimeMillis() + shopLogo.getOriginalFilename();
-            imagePath = "D:/Projects/BookStoreImages/" + fileName;
+    public ResponseEntity<?> UpdateShopForUser(@Valid @ModelAttribute ShopUpdateRequest shopUpdateRequest ){
+        // get shop
+        Shop shop = shopService.retrieveShopByUserId(shopUpdateRequest.getUserId());
+        if(shopUpdateRequest.getShopLogo() != null){
+            String fileName = "image_" + System.currentTimeMillis() + shopUpdateRequest.getShopLogo().getOriginalFilename();
+            String imagePath = "D:/Projects/BookStoreFE/public/images/" + fileName;
             try {
-                shopLogo.transferTo(new File(imagePath));
+                shopUpdateRequest.getShopLogo().transferTo(new File(imagePath));
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
+            shop.setShopLogoPath(imagePath);
         }
-        Shop shop = shopService.retrieveShopByUserId(shopUpdateRequest.getUserId());
-        shop.setShopLogoPath(imagePath);
         shop.setShopName(shopUpdateRequest.getShopName());
         shop.setShopAddress(shopUpdateRequest.getShopAddress());
         shop.setContactPhone(shopUpdateRequest.getContactPhone());
@@ -147,17 +146,10 @@ public class ShopController {
         shopDetailsService.updateShopDetails(shopDetails);
         return new ResponseEntity<>(HttpStatus.OK);
     }
-    @DeleteMapping(value = {Uri.SHOPS_DETAILS})
-    public ResponseEntity<?> DeleteShopDetailForShop(@RequestParam Integer shopId){
-        ShopDetails shopDetails = shopService.retrieveShopDetailsByShopId(shopId);
-        shopDetailsService.deleteShopDetails(shopDetails);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
 
     /* <-------------------- Uri.SHOPS_ORDERS ---------------------> */
     @GetMapping(value = {Uri.SHOPS_ORDERS})
-    public ResponseEntity<?> RetrieveOrdersForShop(@RequestParam Integer shopId, @Valid @RequestBody OrderSearchRequest orderSearchRequest){
+    public ResponseEntity<?> RetrieveOrdersForShop(@RequestParam Integer shopId, @Valid @RequestBody OrderSearchRequest orderSearchRequest) {
         List<OrderDto> orderDtos = orderModuleService.OrderToOrderDto(
                 shopService.retrieveOrdersByCondition(
                         shopId,
@@ -167,18 +159,5 @@ public class ShopController {
                         orderSearchRequest.getDeliveryAddress(),
                         orderSearchRequest.getOrderStatus()));
         return new ResponseEntity<>(orderDtos, HttpStatus.OK);
-    }
-
-    /* <------------------ Uri.SHOPS_BOOK ------------------> */
-    @GetMapping(value = {Uri.SHOPS_BOOK})
-    public ResponseEntity<?> RetrieveBooksForShop(@RequestParam Integer shopId, @RequestParam BookSearchRequest bookSearchRequest){
-        List<BookDto> bookDtos = bookModuleService.convertToListBookDto(
-                shopService.retrieveBooksByCondition(
-                        shopId,
-                        bookSearchRequest.getTitle(),
-                        bookSearchRequest.getPrice(),
-                        bookSearchRequest.getCurrentQuantity(),
-                        bookSearchRequest.getSoldQuantity()));
-        return new ResponseEntity<>(bookDtos, HttpStatus.OK);
     }
 }

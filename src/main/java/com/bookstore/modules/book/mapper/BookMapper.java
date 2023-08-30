@@ -8,6 +8,5 @@ import org.springframework.stereotype.Component;
 @Component
 @Mapper(componentModel = "spring")
 public interface BookMapper {
-    Book BookDtoToBook(BookDto bookDto);
     BookDto BookToBookDto(Book book);
 }

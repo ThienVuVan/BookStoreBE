@@ -6,12 +6,12 @@ import com.bookstore.common.service.*;
 import com.bookstore.modules.book.dto.*;
 import com.bookstore.modules.book.mapper.BookImageMapper;
 import com.bookstore.modules.book.request.*;
+import com.bookstore.modules.book.response.BookResponse;
 import com.bookstore.modules.book.service.BookModuleService;
 import com.bookstore.modules.category.dto.CategoryDto;
 import com.bookstore.modules.category.service.CategoryModuleService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -20,12 +20,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 
 @RestController
@@ -47,13 +48,48 @@ public class BookController {
         Pageable pageRequest = PageRequest.of(page, 5);
         List<BookDto> bookDtos = bookModuleService.convertPageToListBookDto(
                 bookService.retrieveBooksByPage(pageRequest));
+        bookDtos.stream().forEach(bookDto -> {
+            String imagePath = bookService.retrieveBookImagesByBookId(bookDto.getId()).get(0).getImagePath();
+            bookDto.setImagePath(imagePath);
+        });
         return new ResponseEntity<>(bookDtos, HttpStatus.OK);
     }
 
     @GetMapping(value = {Uri.BOOKS})
     public ResponseEntity<?> RetrieveBookById(@RequestParam Integer bookId){
-        BookDto bookDto = bookModuleService.convertToBookDto(bookService.retrieveById(bookId));
-        return new ResponseEntity<>(bookDto, HttpStatus.OK);
+        Book book = bookService.retrieveById(bookId);
+        List<String> authors = book.getAuthors()
+                .stream().map(author -> new String(author.getName())).collect(Collectors.toList());
+        List<String> categories = book.getCategories()
+                .stream().map(category -> new String(category.getName())).collect(Collectors.toList());
+        BookDetails bookDetails = bookService.retrieveBookDetailsByBookId(bookId);
+        List<String> images = bookService.retrieveBookImagesByBookId(bookId)
+                .stream().map(image -> new String(image.getImagePath())).collect(Collectors.toList());
+
+        BookResponse bookResponse = BookResponse.builder()
+                .id(book.getId())
+                .title(book.getTitle())
+                .price(book.getPrice())
+                .currentQuantity(book.getCurrentQuantity())
+                .soldQuantity(book.getSoldQuantity())
+                .publisher(bookDetails.getPublisher())
+                .publicationDate(bookDetails.getPublicationDate())
+                .dimension(bookDetails.getDimension())
+                .coverType(bookDetails.getCoverType())
+                .numberOfPages(bookDetails.getNumberOfPages())
+                .publishingHouse(bookDetails.getPublishingHouse())
+                .description(bookDetails.getDescription())
+                .author(authors.get(0))
+                .category(categories.get(0))
+                .images(images)
+                .build();
+        return new ResponseEntity<>(bookResponse, HttpStatus.OK);
+    }
+
+    @GetMapping(value = {Uri.BOOKS_SHOP})
+    public ResponseEntity<?> RetrieveBookByShopId(@RequestParam Integer shopId){
+        List<BookDto> bookDtos = bookModuleService.convertToListBookDto(bookService.retrieveBookByShopId(shopId));
+        return new ResponseEntity<>(bookDtos, HttpStatus.OK);
     }
 
     @GetMapping(value = {Uri.BOOKS_FILTER})
@@ -67,40 +103,30 @@ public class BookController {
         return new ResponseEntity<>(bookDtos, HttpStatus.OK);
     }
 
-    @PostMapping(value = {Uri.BOOKS}, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> CreateNewBook(@RequestParam Integer shopId,
-                                           @Valid @RequestBody BookRequest bookRequest,
-                                           @Valid @RequestBody BookDetailsRequest bookDetailsRequest,
-                                           @RequestBody List<String> listAuthor,
-                                           @RequestBody(required = false) List<String> listCategory,
-                                           @RequestBody List<MultipartFile> listImage){
+    @PostMapping(value = {Uri.BOOKS})
+    public ResponseEntity<?> CreateNewBook(@RequestParam Integer shopId, @Valid @ModelAttribute BookRequest bookRequest){
+        // find shop
         Shop shop = shopService.retrieveShopById(shopId);
+        // find category
+        Category category = categoryService.retrieveById(bookRequest.getCategoryId());
         // save book;
         Book book = bookService.saveBook(new Book(bookRequest.getTitle(), bookRequest.getPrice(), bookRequest.getCurrentQuantity()));
+        // set category
+        book.addCategory(category);
         // save bookDetails;
         BookDetails bookDetails = bookDetailsService.saveBookDetails(new BookDetails(
-                bookDetailsRequest.getPublisher(),
-                bookDetailsRequest.getPublicationDate(),
-                bookDetailsRequest.getDimension(),
-                bookDetailsRequest.getCoverType(),
-                bookDetailsRequest.getNumberOfPages(),
-                bookDetailsRequest.getPublishingHouse(),
-                bookDetailsRequest.getDescription()));
+                bookRequest.getPublisher(),
+                bookRequest.getPublicationDate(),
+                bookRequest.getDimension(),
+                bookRequest.getCoverType(),
+                bookRequest.getNumberOfPages(),
+                bookRequest.getPublishingHouse(),
+                bookRequest.getDescription()));
         book.setBookDetails(bookDetails);
-        // set authors
-        listAuthor.stream().forEach(author -> {
-            Author author1 = authorService.saveAuthor(new Author(author));
-            book.addAuthor(author1);
-        });
-        // set categories
-        listCategory.stream().forEach(category -> {
-            Category category1 = categoryService.retrieveByCategoryName(category);
-            book.addCategory(category1);
-        });
         // set images
-        listImage.stream().forEach(image -> {
+        bookRequest.getImages().stream().forEach(image -> {
             String fileName = "image_" + System.currentTimeMillis() + image.getOriginalFilename();
-            String imagePath = "D:/Projects/BookStoreImages/" + fileName;
+            String imagePath = "D:/Projects/BookStoreFE/public/images/" + fileName;
             try {
                 image.transferTo(new File(imagePath));
             } catch (IOException e) {
@@ -109,17 +135,56 @@ public class BookController {
             BookImage bookImage = bookImageService.saveBookImage(BookImage.builder().imagePath(imagePath).build());
             book.addBookImage(bookImage);
         });
+        // set authors
+        Author author = authorService.saveAuthor(new Author(bookRequest.getAuthor()));
+        book.addAuthor(author);
         // update book;
         bookService.updateBook(book);
+        // update shop
+        shop.addBook(book);
+        shopService.updateShop(shop);
         return new ResponseEntity(HttpStatus.CREATED);
     }
     @PutMapping(value = {Uri.BOOKS})
-    public ResponseEntity<?> UpdateBook(@RequestParam Integer bookId, @Valid @RequestBody BookRequest bookRequest){
+    public ResponseEntity<?> UpdateBook(@RequestParam Integer bookId, @Valid @ModelAttribute BookUpdateRequest bookUpdateRequest){
         Book book = bookService.retrieveById(bookId);
-        book.setTitle(bookRequest.getTitle());
-        book.setPrice(bookRequest.getPrice());
-        book.setCurrentQuantity(bookRequest.getCurrentQuantity());
+        book.setTitle(bookUpdateRequest.getTitle());
+        book.setPrice(bookUpdateRequest.getPrice());
+        book.setCurrentQuantity(bookUpdateRequest.getCurrentQuantity());
+
+        if(bookUpdateRequest.getNewImages().size() != 0){
+            List<BookImage> bookImages = bookService.retrieveBookImagesByBookId(bookId);
+            bookImages.stream().forEach(bookImage -> bookImageService.deleteBookImage(bookImage));
+            bookUpdateRequest.getNewImages().stream().forEach(image -> {
+                String fileName = "image_" + System.currentTimeMillis() + image.getOriginalFilename();
+                String imagePath = "D:/Projects/BookStoreFE/public/images/" + fileName;
+                try {
+                    image.transferTo(new File(imagePath));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                BookImage bookImage = bookImageService.saveBookImage(BookImage.builder().imagePath(imagePath).build());
+                book.addBookImage(bookImage);
+            });
+        }
+        if(bookUpdateRequest.getNewCategoryId() != null){
+            bookService.deleteBookCategory(bookId);
+            book.setCategories(null);
+            Category category = categoryService.retrieveById(bookUpdateRequest.getNewCategoryId());
+            book.addCategory(category);
+        }
+
+        BookDetails bookDetails = bookService.retrieveBookDetailsByBookId(bookId);
+        bookDetails.setPublisher(bookUpdateRequest.getPublisher());
+        bookDetails.setPublicationDate(bookUpdateRequest.getPublicationDate());
+        bookDetails.setDimension(bookUpdateRequest.getDimension());
+        bookDetails.setCoverType(bookUpdateRequest.getCoverType());
+        bookDetails.setNumberOfPages(bookUpdateRequest.getNumberOfPages());
+        bookDetails.setPublishingHouse(bookUpdateRequest.getPublishingHouse());
+        bookDetails.setDescription(bookUpdateRequest.getDescription());
+
         bookService.updateBook(book);
+        bookDetailsService.updateBookDetails(bookDetails);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -130,134 +195,6 @@ public class BookController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    /* <----------------- Uri.BOOKS_DETAILS -----------------> */
-    @GetMapping(value = {Uri.BOOKS_DETAILS})
-    public ResponseEntity<?> RetrieveBookDetailForBook(@RequestParam Integer bookId){
-        BookDetailsDto bookDetailsDto = bookModuleService.convertToBookDetailsDto(bookService.retrieveBookDetailsByBookId(bookId));
-        return new ResponseEntity<>(bookDetailsDto, HttpStatus.OK);
-    }
-
-    @PutMapping(value = {Uri.BOOKS_DETAILS})
-    public ResponseEntity<?> UpdateBookDetailForBook(@RequestParam Integer bookId, @Valid @RequestBody BookDetailsRequest bookDetailsRequest){
-        BookDetails bookDetails = bookService.retrieveBookDetailsByBookId(bookId);
-        bookDetails.setPublisher(bookDetailsRequest.getPublisher());
-        bookDetails.setPublicationDate(bookDetailsRequest.getPublicationDate());
-        bookDetails.setDimension(bookDetailsRequest.getDimension());
-        bookDetails.setCoverType(bookDetailsRequest.getCoverType());
-        bookDetails.setNumberOfPages(bookDetailsRequest.getNumberOfPages());
-        bookDetails.setPublishingHouse(bookDetailsRequest.getPublishingHouse());
-        bookDetails.setDescription(bookDetailsRequest.getDescription());
-        bookDetailsService.updateBookDetails(bookDetails);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    @DeleteMapping(value = {Uri.BOOKS_DETAILS})
-    public ResponseEntity<?> DeleteBookDetailForBook(@RequestParam Integer bookId){
-        BookDetails bookDetails = bookService.retrieveBookDetailsByBookId(bookId);
-        bookDetailsService.deleteBookDetails(bookDetails);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    /* <------------------- Uri.BOOKS_IMAGES ---------------------> */
-
-    @GetMapping(value = {Uri.BOOKS_IMAGES})
-    public ResponseEntity<?> RetrieveBookImageForBook(@RequestParam Integer bookId) {
-        List<BookImageDto> bookImageDtoList = bookImageMapper.bookImageToDto(bookService.retrieveBookImagesByBookId(bookId));
-        return ResponseEntity.ok(bookImageDtoList);
-    }
-
-    @PutMapping(value = {Uri.BOOKS_IMAGES} , consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> UpdateBookImageForBook(@RequestParam Integer bookId, @RequestBody List<MultipartFile> images) {
-        Book book = bookService.retrieveById(bookId);
-        // delete BookImages
-        bookService.retrieveBookImagesByBookId(bookId).stream().forEach(bookImage -> {
-            bookImageService.deleteBookImage(bookImage);
-        });
-        // Set new BookImages
-        images.stream().forEach(image -> {
-            String fileName = "image_" + System.currentTimeMillis() + image.getOriginalFilename();
-            String imagePath = "D:/Projects/BookStoreImages/" + fileName;
-            try {
-                image.transferTo(new File(imagePath));
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-            BookImage bookImage = BookImage.builder().imagePath(imagePath).build();
-            book.addBookImage(bookImage);
-        });
-        // update
-        bookService.updateBook(book);
-        return new ResponseEntity<>(HttpStatus.CREATED);
-    }
-
-    @DeleteMapping(value = {Uri.BOOKS_IMAGES})
-    public ResponseEntity<?> DeleteBookImageForBook(@RequestParam Integer bookId){
-        bookService.retrieveBookImagesByBookId(bookId).stream().forEach(bookImage -> {
-            bookImageService.deleteBookImage(bookImage);
-        });
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    /* <------------------- Uri.BOOKS_AUTHORS ---------------------> */
-
-    @GetMapping(value = {Uri.BOOKS_AUTHORS})
-    public ResponseEntity<?> RetrieveBookAuthorForBook(@RequestParam Integer bookId){
-        List<AuthorDto> authorDtos = bookModuleService.convertToListAuthorDto(bookService.retrieveAuthorsByBookId(bookId));
-        return new ResponseEntity<>(authorDtos, HttpStatus.OK);
-    }
-
-    @PutMapping(value = {Uri.BOOKS_AUTHORS})
-    public ResponseEntity<?> UpdateBookAuthorForBook(@RequestParam Integer bookId, @RequestBody List<String> authors){
-        // delete old authors
-        List<Author> authorList = bookService.retrieveAuthorsByBookId(bookId);
-        authorList.stream().forEach(author -> authorService.deleteAuthor(author));
-
-        // get book;
-        Book book = bookService.retrieveById(bookId);
-        authors.stream().forEach(author -> {
-            Author author1 = authorService.saveAuthor(new Author(author));
-            book.addAuthor(author1);
-        });
-        // update
-        bookService.updateBook(book);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    @DeleteMapping(value = {Uri.BOOKS_AUTHORS})
-    public ResponseEntity<?> DeleteBookAuthorForBook(@RequestParam Integer bookId){
-        // delete old authors
-        List<Author> authorList = bookService.retrieveAuthorsByBookId(bookId);
-        authorList.stream().forEach(author -> authorService.deleteAuthor(author));
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-
-    /* <----------------------- Uri.BOOKS_CATEGORIES -------------------> */
-
-    @GetMapping(value = {Uri.BOOKS_CATEGORIES})
-    public ResponseEntity<?> RetrieveBookCategoryForBook(@RequestParam Integer bookId){
-        List<CategoryDto> categoryDtos = categoryModuleService.convertToListCategoryDto(categoryService.retrieveCategoriesByBooksId(bookId));
-        return new ResponseEntity<>(categoryDtos, HttpStatus.OK);
-    }
-
-    @PutMapping(value = {Uri.BOOKS_CATEGORIES})
-    public ResponseEntity<?> UpdateBookCategoryForBook(@RequestParam Integer bookId, @RequestBody List<Integer> categoriesId){
-        Book book = bookService.retrieveById(bookId);
-        Set<Category> categories = new HashSet<>();
-        categoriesId.stream().forEach(id -> {
-            categories.add(categoryService.retrieveById(id));
-        });
-        categoryService.deleteBookCategoriesByBookId(bookId);
-        book.setCategories(categories);
-        bookService.updateBook(book);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    @DeleteMapping(value = {Uri.BOOKS_CATEGORIES})
-    public ResponseEntity<?> DeleteBookCategoryForBook(@RequestParam Integer bookId){
-        categoryService.deleteBookCategoriesByBookId(bookId);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
 
     /* <----------------------- Uri.BOOKS_REVIEWS -------------------> */
 
