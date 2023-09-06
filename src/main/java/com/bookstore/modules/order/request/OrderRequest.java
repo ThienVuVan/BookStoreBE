@@ -8,6 +8,8 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.validator.constraints.Length;
 
+import java.util.List;
+
 
 @Getter
 @Setter
@@ -23,15 +25,12 @@ public class OrderRequest {
 
     @NotNull
     @PositiveOrZero
-    @Column(name = "total_price")
     Double totalPrice;
 
     @NotBlank
-    @Length(min = 5)
-    @Column(name = "delivery_address")
     String DeliveryAddress;
 
-    @NotNull
-    @Column(name = "order_status")
     Boolean orderStatus;
+
+    List<Object> orderItems;
 }

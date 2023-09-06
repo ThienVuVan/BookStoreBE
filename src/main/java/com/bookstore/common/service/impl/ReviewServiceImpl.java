@@ -16,10 +16,6 @@ import java.util.List;
 public class ReviewServiceImpl implements ReviewService {
 
     private final ReviewRepository reviewRepository;
-    @Override
-    public List<Review> retrieveAllReview() {
-        return reviewRepository.findAll();
-    }
 
     @Override
     public Review saveReview(Review review) {

@@ -5,7 +5,6 @@ import com.bookstore.common.entity.BookDetails;
 import com.bookstore.common.entity.BookImage;
 import com.bookstore.modules.book.dto.BookDto;
 import com.bookstore.common.entity.Book;
-import com.bookstore.modules.book.dto.BookImageDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

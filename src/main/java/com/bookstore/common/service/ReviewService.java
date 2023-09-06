@@ -8,7 +8,6 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 public interface ReviewService {
-    public List<Review> retrieveAllReview();
     public Review saveReview(Review review);
     public Review updateReview(Review review);
     public void deleteReview(Review review);

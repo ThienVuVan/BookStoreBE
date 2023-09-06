@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.validator.constraints.Length;
+import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @Setter
@@ -16,11 +17,10 @@ import org.hibernate.validator.constraints.Length;
 public class ReviewCreateRequest {
     @NotNull
     Integer userId;
-
     @NotNull
     Integer bookId;
-
     @NotBlank
     @Length(min = 1)
     String comment;
+    MultipartFile image;
 }

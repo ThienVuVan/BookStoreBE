@@ -4,7 +4,6 @@ import com.bookstore.common.entity.*;
 import com.bookstore.common.service.RateService;
 import com.bookstore.modules.book.dto.*;
 import com.bookstore.modules.book.mapper.*;
-import com.bookstore.modules.category.dto.CategoryDto;
 import com.bookstore.modules.category.mapper.CategoryMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -17,11 +16,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class BookModuleService {
     private final BookMapper bookMapper;
-    private final BookDetailsMapper bookDetailsMapper;
-    private final AuthorMapper authorMapper;
     private final ReviewMapper reviewMapper;
     private final RateService rateService;
-    private final CategoryMapper categoryMapper;
 
     public BookDto convertToBookDto(Book book){
         return bookMapper.BookToBookDto(book);
@@ -34,9 +30,15 @@ public class BookModuleService {
         return page.getContent().stream().map(book -> bookMapper.BookToBookDto(book)).collect(Collectors.toList());
     }
     public List<ReviewDto> convertToListReviewDto(Page<Review> reviews){
-        return reviews.getContent().stream().map(review ->
+        List<ReviewDto> reviewDtos = reviews.getContent().stream().map(review ->
             reviewMapper.ReviewToDto(review)
         ).collect(Collectors.toList());
+        var wrapper = new Object(){ Integer ordinal = 0; };
+        reviews.stream().forEach(review -> {
+            reviewDtos.get(wrapper.ordinal).setUsername(review.getUser().getUsername());
+            wrapper.ordinal++;
+        });
+        return reviewDtos;
     }
 
     public RateDto convertToRateDto(Integer bookId){

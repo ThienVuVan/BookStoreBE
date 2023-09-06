@@ -29,20 +29,15 @@ public class OrderController {
     private final BookService bookService;
     private final OrderModuleService orderModuleService;
 
+    // change
     @PostMapping(value = {Uri.ORDERS})
-    public ResponseEntity<?> CreateNewOrder(@Valid @RequestBody OrderRequest orderRequest,
-                                            @Valid @RequestBody List<OrderItemRequest> orderItemRequests){
+    public ResponseEntity<?> CreateNewOrder(@Valid @RequestBody OrderRequest orderRequest ){
         Order order = orderService.saveOrder(Order.builder()
                 .date(LocalDate.now())
                 .totalPrice(orderRequest.getTotalPrice())
                 .DeliveryAddress(orderRequest.getDeliveryAddress())
                 .orderStatus(OrderStatus.ORDER_PLACEMENT)
                 .build());
-        orderItemRequests.stream().forEach(orderItemRequest -> {
-            Book book = bookService.retrieveById(orderItemRequest.getBookId());
-            OrderItem orderItem = new OrderItem(book, orderItemRequest.getQuantity());
-            order.addOrderItem(orderItem);
-        });
         orderService.updateOrder(order);
         return new ResponseEntity(HttpStatus.CREATED);
     }

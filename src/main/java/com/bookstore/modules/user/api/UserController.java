@@ -81,18 +81,18 @@ public class UserController {
     /* <---------------------- Uri.USERS_REVIEWS ------------------------> */
 
     @PostMapping(value = {Uri.USERS_REVIEWS})
-    public ResponseEntity<?> CreateReviewForUser(@RequestBody(required = false) MultipartFile image, @Valid @RequestBody ReviewCreateRequest reviewCreateRequest){
+    public ResponseEntity<?> CreateReviewForUser(@Valid @ModelAttribute ReviewCreateRequest reviewCreateRequest){
         // get user
         User user = userService.retrieveUserById(reviewCreateRequest.getUserId());
         // get book
         Book book = bookService.retrieveById(reviewCreateRequest.getBookId());
         String imagePath = null;
         // resolve image;
-        if(image != null){
-            String fileName = "image_" + System.currentTimeMillis() + image.getOriginalFilename();
-            imagePath = "D:/Projects/BookStoreImages/" + fileName;
+        if(reviewCreateRequest.getImage() != null){
+            String fileName = "image_" + System.currentTimeMillis() + reviewCreateRequest.getImage().getOriginalFilename();
+            imagePath = "D:/Projects/BookStoreFE/public/images/" + fileName;
             try {
-                image.transferTo(new File(imagePath));
+                reviewCreateRequest.getImage().transferTo(new File(imagePath));
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -111,6 +111,7 @@ public class UserController {
     }
 
     /* <------------------- Uri.USERS_RATES --------------------> */
+
     @PostMapping(value = {Uri.USERS_RATES})
     public ResponseEntity<?> CreateRateForUser(@Valid @RequestBody RateCreateRequest rateCreateRequest){
         User user = userService.retrieveUserById(rateCreateRequest.getUserId());

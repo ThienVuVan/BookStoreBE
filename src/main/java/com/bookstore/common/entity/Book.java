@@ -120,7 +120,7 @@ public class Book extends Common {
     /* To Review */
     /* Delete Book, Delete Reviews */
     @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "book", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "book", cascade = CascadeType.ALL)
     Set<Review> reviews;
 
     /* To Rate */

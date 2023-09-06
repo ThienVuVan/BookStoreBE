@@ -47,6 +47,11 @@ public class ShopServiceImpl implements ShopService {
     }
 
     @Override
+    public Shop retrieveShopByBookId(Integer bookId) {
+        return shopRepository.findShopByBookId(bookId);
+    }
+
+    @Override
     public Shop retrieveShopByShopName(String name) {
         return shopRepository.findShopByShopName(name);
     }

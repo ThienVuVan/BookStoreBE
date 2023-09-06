@@ -4,28 +4,21 @@ import com.bookstore.common.entity.*;
 import com.bookstore.common.enums.Uri;
 import com.bookstore.common.service.*;
 import com.bookstore.modules.book.dto.*;
-import com.bookstore.modules.book.mapper.BookImageMapper;
 import com.bookstore.modules.book.request.*;
-import com.bookstore.modules.book.response.BookResponse;
+import com.bookstore.modules.book.response.BookDetailResponse;
 import com.bookstore.modules.book.service.BookModuleService;
-import com.bookstore.modules.category.dto.CategoryDto;
-import com.bookstore.modules.category.service.CategoryModuleService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 
@@ -38,14 +31,12 @@ public class BookController {
     private final ReviewService reviewService;
     private final CategoryService categoryService;
     private final BookImageService bookImageService;
-    private final BookImageMapper bookImageMapper;
     private final BookModuleService bookModuleService;
-    private final CategoryModuleService categoryModuleService;
     private final ShopService shopService;
 
     @GetMapping(value = {Uri.BOOKS_PAGE})
     public ResponseEntity<?> RetrieveBooksByPage(@RequestParam Integer page){
-        Pageable pageRequest = PageRequest.of(page, 5);
+        Pageable pageRequest = PageRequest.of(page, 8);
         List<BookDto> bookDtos = bookModuleService.convertPageToListBookDto(
                 bookService.retrieveBooksByPage(pageRequest));
         bookDtos.stream().forEach(bookDto -> {
@@ -55,8 +46,16 @@ public class BookController {
         return new ResponseEntity<>(bookDtos, HttpStatus.OK);
     }
 
-    @GetMapping(value = {Uri.BOOKS})
+    @GetMapping(value = Uri.BOOKS)
     public ResponseEntity<?> RetrieveBookById(@RequestParam Integer bookId){
+        BookDto bookDto = bookModuleService.convertToBookDto(bookService.retrieveById(bookId));
+        String imagePath = bookService.retrieveBookImagesByBookId(bookDto.getId()).get(0).getImagePath();
+        bookDto.setImagePath(imagePath);
+        return new ResponseEntity<>(bookDto, HttpStatus.OK);
+    }
+
+    @GetMapping(value = {Uri.BOOKS_DETAILS})
+    public ResponseEntity<?> RetrieveBookDetailById(@RequestParam Integer bookId){
         Book book = bookService.retrieveById(bookId);
         List<String> authors = book.getAuthors()
                 .stream().map(author -> new String(author.getName())).collect(Collectors.toList());
@@ -65,9 +64,10 @@ public class BookController {
         BookDetails bookDetails = bookService.retrieveBookDetailsByBookId(bookId);
         List<String> images = bookService.retrieveBookImagesByBookId(bookId)
                 .stream().map(image -> new String(image.getImagePath())).collect(Collectors.toList());
-
-        BookResponse bookResponse = BookResponse.builder()
+        Integer shopId = shopService.retrieveShopByBookId(bookId).getId();
+        BookDetailResponse bookResponse = BookDetailResponse.builder()
                 .id(book.getId())
+                .shopId(shopId)
                 .title(book.getTitle())
                 .price(book.getPrice())
                 .currentQuantity(book.getCurrentQuantity())
@@ -198,12 +198,11 @@ public class BookController {
 
     /* <----------------------- Uri.BOOKS_REVIEWS -------------------> */
 
-    // updating
     @GetMapping(value = {Uri.BOOKS_REVIEWS})
     public ResponseEntity<?> RetrieveReviewsForBook(@RequestParam Integer bookId, @RequestParam Integer page){
         Pageable pageable = PageRequest.of(page, 10);
-        List<ReviewDto>reviewDtos = bookModuleService.convertToListReviewDto(reviewService.retrieveReviewsByPage(bookId, pageable));
-        return new ResponseEntity<>(HttpStatus.OK);
+        List<ReviewDto> reviewDtos = bookModuleService.convertToListReviewDto(reviewService.retrieveReviewsByPage(bookId, pageable));
+        return new ResponseEntity<>(reviewDtos, HttpStatus.OK);
     }
 
     /* <----------------------- Uri.BOOKS_RATES ---------------------> */
@@ -213,5 +212,4 @@ public class BookController {
         RateDto rateDto = bookModuleService.convertToRateDto(bookId);
         return new ResponseEntity<>(rateDto, HttpStatus.OK);
     }
-
 }

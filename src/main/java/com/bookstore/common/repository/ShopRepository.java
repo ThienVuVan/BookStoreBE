@@ -17,7 +17,8 @@ public interface ShopRepository extends JpaRepository<Shop, Integer> {
     Shop findShopByShopName(String name);
     @Query("select d, s from Shop s join fetch s.shopDetails d where s.id = :id")
     ShopDetails findShopDetailsByShopId(Integer id);
-
+    @Query("from Shop s join fetch s.books b where b.id = :bookId")
+    Shop findShopByBookId(Integer bookId);
     @Query("""
             select o, s from Shop s join fetch s.orders o where (s.id = :shopId)
             and (o.id = :orderId or :orderId is null)
