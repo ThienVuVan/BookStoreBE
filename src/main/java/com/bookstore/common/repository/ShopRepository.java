@@ -28,7 +28,7 @@ public interface ShopRepository extends JpaRepository<Shop, Integer> {
             and (o.orderStatus = :orderStatus or :orderStatus is null)
            """)
     List<Order> findOrdersForShop(Integer shopId, Integer orderId,LocalDate date,
-                                  Double totalPrice, String DeliveryAddress, Boolean orderStatus);
+                                  Double totalPrice, String DeliveryAddress, String orderStatus);
 
     @Query("""
             select b, s from Shop s join fetch s.books b where (s.id = :shopId)

@@ -15,5 +15,5 @@ public class OrderDto {
     LocalDate date;
     Double totalPrice;
     String DeliveryAddress;
-    String ordeStatus;
+    String orderStatus;
 }

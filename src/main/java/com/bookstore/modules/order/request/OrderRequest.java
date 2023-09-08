@@ -1,5 +1,6 @@
 package com.bookstore.modules.order.request;
 
+import com.bookstore.common.entity.OrderItem;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -27,10 +28,9 @@ public class OrderRequest {
     @PositiveOrZero
     Double totalPrice;
 
-    @NotBlank
-    String DeliveryAddress;
+    String address;
 
     Boolean orderStatus;
 
-    List<Object> orderItems;
+    List<OrderItemRequest> orderItems;
 }

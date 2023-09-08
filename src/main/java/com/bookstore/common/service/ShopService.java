@@ -18,7 +18,7 @@ public interface ShopService {
     public Shop retrieveShopByShopName(String name);
     public ShopDetails retrieveShopDetailsByShopId(Integer id);
     public List<Order> retrieveOrdersByCondition(Integer shopId, Integer orderId, LocalDate date,
-                                                 Double totalPrice, String DeliveryAddress, Boolean orderStatus);
+                                                 Double totalPrice, String DeliveryAddress, String orderStatus);
     public List<Book> retrieveBooksByCondition(Integer shopId, String title, Double price, Integer currentQuantity, Integer soldQuantity);
 
 }

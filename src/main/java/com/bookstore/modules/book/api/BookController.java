@@ -53,7 +53,7 @@ public class BookController {
         bookDto.setImagePath(imagePath);
         return new ResponseEntity<>(bookDto, HttpStatus.OK);
     }
-
+    // change
     @GetMapping(value = {Uri.BOOKS_DETAILS})
     public ResponseEntity<?> RetrieveBookDetailById(@RequestParam Integer bookId){
         Book book = bookService.retrieveById(bookId);
@@ -64,10 +64,13 @@ public class BookController {
         BookDetails bookDetails = bookService.retrieveBookDetailsByBookId(bookId);
         List<String> images = bookService.retrieveBookImagesByBookId(bookId)
                 .stream().map(image -> new String(image.getImagePath())).collect(Collectors.toList());
-        Integer shopId = shopService.retrieveShopByBookId(bookId).getId();
+        Shop shop = shopService.retrieveShopByBookId(bookId);
+        Integer shopId = shop.getId();
+        String shopName = shop.getShopName();
         BookDetailResponse bookResponse = BookDetailResponse.builder()
                 .id(book.getId())
                 .shopId(shopId)
+                .shopName(shopName)
                 .title(book.getTitle())
                 .price(book.getPrice())
                 .currentQuantity(book.getCurrentQuantity())

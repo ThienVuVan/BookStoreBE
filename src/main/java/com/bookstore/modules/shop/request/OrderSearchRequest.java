@@ -17,5 +17,5 @@ public class OrderSearchRequest {
     LocalDate date;
     Double totalPrice;
     String DeliveryAddress;
-    Boolean orderStatus;
+    String orderStatus;
 }

@@ -15,6 +15,7 @@ import java.util.List;
 public class BookDetailResponse {
     Integer id;
     Integer shopId;
+    String shopName;
     String title;
     Double price;
     Integer currentQuantity;

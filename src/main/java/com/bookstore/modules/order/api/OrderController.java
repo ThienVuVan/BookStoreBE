@@ -1,13 +1,13 @@
 package com.bookstore.modules.order.api;
 
-import com.bookstore.common.entity.Book;
-import com.bookstore.common.entity.Order;
-import com.bookstore.common.entity.OrderItem;
+import com.bookstore.common.entity.*;
 import com.bookstore.common.enums.Constant;
 import com.bookstore.common.enums.OrderStatus;
 import com.bookstore.common.enums.Uri;
 import com.bookstore.common.service.BookService;
 import com.bookstore.common.service.OrderService;
+import com.bookstore.common.service.ShopService;
+import com.bookstore.common.service.UserService;
 import com.bookstore.modules.order.dto.OrderItemDto;
 import com.bookstore.modules.order.request.OrderItemRequest;
 import com.bookstore.modules.order.request.OrderRequest;
@@ -28,6 +28,8 @@ public class OrderController {
     private final OrderService orderService;
     private final BookService bookService;
     private final OrderModuleService orderModuleService;
+    private final UserService userService;
+    private final ShopService shopService;
 
     // change
     @PostMapping(value = {Uri.ORDERS})
@@ -35,9 +37,18 @@ public class OrderController {
         Order order = orderService.saveOrder(Order.builder()
                 .date(LocalDate.now())
                 .totalPrice(orderRequest.getTotalPrice())
-                .DeliveryAddress(orderRequest.getDeliveryAddress())
+                .DeliveryAddress(orderRequest.getAddress())
                 .orderStatus(OrderStatus.ORDER_PLACEMENT)
                 .build());
+        User user = userService.retrieveUserById(orderRequest.getUserId());
+        Shop shop = shopService.retrieveShopById(orderRequest.getShopId());
+        order.setUser(user);
+        order.setShop(shop);
+        orderRequest.getOrderItems().stream().forEach(orderItem -> {
+            Book book = bookService.retrieveById(orderItem.getBookId());
+            OrderItem orderItem1 = new OrderItem(book, orderItem.getQuantity());
+            order.addOrderItem(orderItem1);
+        });
         orderService.updateOrder(order);
         return new ResponseEntity(HttpStatus.CREATED);
     }

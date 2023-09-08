@@ -62,7 +62,7 @@ public class ShopServiceImpl implements ShopService {
     }
 
     @Override
-    public List<Order> retrieveOrdersByCondition(Integer shopId, Integer orderId, LocalDate date, Double totalPrice, String DeliveryAddress, Boolean orderStatus) {
+    public List<Order> retrieveOrdersByCondition(Integer shopId, Integer orderId, LocalDate date, Double totalPrice, String DeliveryAddress, String orderStatus) {
         return shopRepository.findOrdersForShop(shopId, orderId, date, totalPrice, DeliveryAddress, orderStatus);
     }
 
