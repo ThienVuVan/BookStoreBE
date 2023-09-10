@@ -19,9 +19,4 @@ public class BookDetailsServiceImpl implements BookDetailsService {
     public BookDetails updateBookDetails(BookDetails bookDetails) {
         return bookDetailsRepository.save(bookDetails);
     }
-
-    @Override
-    public void deleteBookDetails(BookDetails bookDetails) {
-        bookDetailsRepository.delete(bookDetails);
-    }
 }

@@ -12,11 +12,6 @@ import java.util.List;
 public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
     @Override
-    public List<Category> retrieveAllCategory() {
-        return categoryRepository.findAll();
-    }
-
-    @Override
     public Category saveCategory(Category category) {
         return categoryRepository.save(category);
     }
@@ -41,22 +36,10 @@ public class CategoryServiceImpl implements CategoryService {
         return categoryRepository.findCategoryByName(name);
 
     }
-
     @Override
     public List<Category> retrieveCategoriesByParentId(Integer parentId) {
         return categoryRepository.findCategoriesByParentId(parentId);
     }
-
-    @Override
-    public List<Category> retrieveCategoriesByBooksId(Integer bookId) {
-        return categoryRepository.findCategoriesByBooksId(bookId);
-    }
-
-    @Override
-    public void deleteBookCategoriesByBookId(Integer bookId) {
-        categoryRepository.deleteBookCategoriesByBookId(bookId);
-    }
-
     @Override
     public Category retrieveById(Integer id) {
         return categoryRepository.findCategoryById(id);

@@ -12,6 +12,7 @@ public class BookDto {
     Integer id;
     String title;
     Double price;
+    String author;
     Integer currentQuantity;
     Integer soldQuantity;
     String imagePath;

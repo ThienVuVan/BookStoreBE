@@ -1,6 +1,5 @@
 package com.bookstore.common.service.impl;
 
-import com.bookstore.common.entity.Author;
 import com.bookstore.common.entity.BookDetails;
 import com.bookstore.common.entity.BookImage;
 import com.bookstore.modules.book.dto.BookDto;
@@ -21,12 +20,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class BookServiceImpl implements BookService {
     private final BookRepository bookRepository;
-    private BookMapper bookMapper = Mappers.getMapper(BookMapper.class);
-    @Override
-    public List<BookDto> retrieveAllBooks() {
-        return bookRepository.findAll().stream().map(book -> bookMapper.BookToBookDto(book))
-                .collect(Collectors.toList());
-    }
     @Override
     public Book saveBook(Book book) {
         return bookRepository.save(book);
@@ -58,8 +51,8 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public List<Book> retrieveBookByCondition(String title, Double price, String category) {
-        return bookRepository.findBookByCondition(title, price, category);
+    public List<Book> retrieveBookByCondition(String title, String authors, Double lowPrice, Double highPrice, String category) {
+        return bookRepository.findBookByCondition(title, authors, lowPrice, highPrice, category);
     }
 
     @Override
@@ -70,11 +63,6 @@ public class BookServiceImpl implements BookService {
     @Override
     public List<BookImage> retrieveBookImagesByBookId(Integer id) {
         return bookRepository.findBookImagesByBookId(id);
-    }
-
-    @Override
-    public List<Author> retrieveAuthorsByBookId(Integer id) {
-        return bookRepository.findAuthorsByBookId(id);
     }
 
     @Override

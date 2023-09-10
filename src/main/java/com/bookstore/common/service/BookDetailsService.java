@@ -6,5 +6,4 @@ import com.bookstore.common.entity.BookDetails;
 public interface BookDetailsService {
     public BookDetails saveBookDetails(BookDetails bookDetails);
     public BookDetails updateBookDetails(BookDetails bookDetails);
-    public void deleteBookDetails(BookDetails bookDetails);
 }

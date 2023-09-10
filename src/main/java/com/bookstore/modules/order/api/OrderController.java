@@ -53,9 +53,9 @@ public class OrderController {
         return new ResponseEntity(HttpStatus.CREATED);
     }
     @PutMapping(value = {Uri.ORDERS})
-    public ResponseEntity<?> UpdateOrder(@Valid @RequestBody OrderUpdateRequest orderUpdateRequest){
-        Order order = orderService.retrieveById(orderUpdateRequest.getOrderId());
-        order.setOrderStatus(orderUpdateRequest.getOrderStatus());
+    public ResponseEntity<?> UpdateOrder(@RequestParam Integer orderId, @RequestParam String orderStatus){
+        Order order = orderService.retrieveById(orderId);
+        order.setOrderStatus(orderStatus);
         orderService.updateOrder(order);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -67,8 +67,7 @@ public class OrderController {
     }
     @GetMapping(value = {Uri.ORDERS_ORDER_ITEMS})
     public ResponseEntity<?> RetrieveAllOrderItemsForOrder(@RequestParam Integer orderId){
-        List<OrderItemDto> orderItemDtos = orderModuleService.convertToListOrderItem(
-                orderService.retrieveOrderItemsByOrderId(orderId));
-        return new ResponseEntity<>(orderItemDtos, HttpStatus.OK);
+        List<OrderItem> orderItems = orderService.retrieveOrderItemsByOrderId(orderId);
+        return new ResponseEntity<>(orderItems, HttpStatus.OK);
     }
 }

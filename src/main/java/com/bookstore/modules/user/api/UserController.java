@@ -19,7 +19,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
@@ -81,7 +80,7 @@ public class UserController {
     /* <---------------------- Uri.USERS_REVIEWS ------------------------> */
 
     @PostMapping(value = {Uri.USERS_REVIEWS})
-    public ResponseEntity<?> CreateReviewForUser(@Valid @ModelAttribute ReviewCreateRequest reviewCreateRequest){
+    public ResponseEntity<?> CreateReviewForUser(@Valid @ModelAttribute ReviewRateCreateRequest reviewCreateRequest){
         // get user
         User user = userService.retrieveUserById(reviewCreateRequest.getUserId());
         // get book
@@ -100,6 +99,10 @@ public class UserController {
         // just using one - directional mapping
         Review review = new Review(user, book, reviewCreateRequest.getComment(), imagePath);
         reviewService.saveReview(review);
+
+        UserBookKey userBookKey = new UserBookKey(user.getId(), book.getId());
+        Rate rate = new Rate(userBookKey, user, book, reviewCreateRequest.getRate());
+        rateService.saveRate(rate);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
@@ -109,23 +112,4 @@ public class UserController {
         reviewService.deleteReview(review);
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
-    /* <------------------- Uri.USERS_RATES --------------------> */
-
-    @PostMapping(value = {Uri.USERS_RATES})
-    public ResponseEntity<?> CreateRateForUser(@Valid @RequestBody RateCreateRequest rateCreateRequest){
-        User user = userService.retrieveUserById(rateCreateRequest.getUserId());
-        Book book = bookService.retrieveById(rateCreateRequest.getBookId());
-        UserBookKey userBookKey = new UserBookKey(user.getId(), book.getId());
-        Rate rate = new Rate(userBookKey, user, book, rateCreateRequest.getRating());
-        rateService.saveRate(rate);
-        return new ResponseEntity<>(HttpStatus.CREATED);
-    }
-    @DeleteMapping(value = {Uri.USERS_RATES})
-    public ResponseEntity<?> DeleteRateForUser(@RequestParam UserBookKey rateId){
-        Rate rate = rateService.retrieveRateById(rateId);
-        rateService.deleteRate(rate);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
 }

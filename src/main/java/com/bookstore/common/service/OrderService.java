@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface OrderService {
-    public List<Order> retrieveAllOrder();
     public Order saveOrder(Order order);
     public Order updateOrder(Order order);
     public void deleteOrder(Order order);

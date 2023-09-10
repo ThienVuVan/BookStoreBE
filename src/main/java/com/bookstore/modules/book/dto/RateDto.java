@@ -9,9 +9,9 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class RateDto {
-    Integer fiveStart;
-    Integer fourStart;
-    Integer threeStart;
-    Integer twoStart;
-    Integer oneStart;
+    Integer fiveStar;
+    Integer fourStar;
+    Integer threeStar;
+    Integer twoStar;
+    Integer oneStar;
 }

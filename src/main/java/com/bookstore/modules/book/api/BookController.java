@@ -27,7 +27,6 @@ import java.util.stream.Collectors;
 public class BookController {
     private final BookService bookService;
     private final BookDetailsService bookDetailsService;
-    private final AuthorService authorService;
     private final ReviewService reviewService;
     private final CategoryService categoryService;
     private final BookImageService bookImageService;
@@ -53,17 +52,15 @@ public class BookController {
         bookDto.setImagePath(imagePath);
         return new ResponseEntity<>(bookDto, HttpStatus.OK);
     }
-    // change
+
     @GetMapping(value = {Uri.BOOKS_DETAILS})
     public ResponseEntity<?> RetrieveBookDetailById(@RequestParam Integer bookId){
         Book book = bookService.retrieveById(bookId);
-        List<String> authors = book.getAuthors()
-                .stream().map(author -> new String(author.getName())).collect(Collectors.toList());
         List<String> categories = book.getCategories()
                 .stream().map(category -> new String(category.getName())).collect(Collectors.toList());
-        BookDetails bookDetails = bookService.retrieveBookDetailsByBookId(bookId);
         List<String> images = bookService.retrieveBookImagesByBookId(bookId)
                 .stream().map(image -> new String(image.getImagePath())).collect(Collectors.toList());
+        BookDetails bookDetails = bookService.retrieveBookDetailsByBookId(bookId);
         Shop shop = shopService.retrieveShopByBookId(bookId);
         Integer shopId = shop.getId();
         String shopName = shop.getShopName();
@@ -82,7 +79,7 @@ public class BookController {
                 .numberOfPages(bookDetails.getNumberOfPages())
                 .publishingHouse(bookDetails.getPublishingHouse())
                 .description(bookDetails.getDescription())
-                .author(authors.get(0))
+                .author(book.getAuthor())
                 .category(categories.get(0))
                 .images(images)
                 .build();
@@ -95,14 +92,21 @@ public class BookController {
         return new ResponseEntity<>(bookDtos, HttpStatus.OK);
     }
 
-    @GetMapping(value = {Uri.BOOKS_FILTER})
+    // change - need to update author
+    @PostMapping(value = {Uri.BOOKS_FILTER})
     public ResponseEntity<?> RetrieveBookByCondition(@Valid @RequestBody BookSearchRequest bookSearchRequest){
         List<BookDto> bookDtos = bookModuleService.convertToListBookDto(
                 bookService.retrieveBookByCondition(
                         bookSearchRequest.getTitle(),
-                        bookSearchRequest.getPrice(),
+                        bookSearchRequest.getAuthors(),
+                        bookSearchRequest.getLowPrice(),
+                        bookSearchRequest.getHighPrice(),
                         bookSearchRequest.getCategory()
                 ));
+        bookDtos.stream().forEach(bookDto -> {
+            String imagePath = bookService.retrieveBookImagesByBookId(bookDto.getId()).get(0).getImagePath();
+            bookDto.setImagePath(imagePath);
+        });
         return new ResponseEntity<>(bookDtos, HttpStatus.OK);
     }
 
@@ -113,7 +117,7 @@ public class BookController {
         // find category
         Category category = categoryService.retrieveById(bookRequest.getCategoryId());
         // save book;
-        Book book = bookService.saveBook(new Book(bookRequest.getTitle(), bookRequest.getPrice(), bookRequest.getCurrentQuantity()));
+        Book book = bookService.saveBook(new Book(bookRequest.getTitle(), bookRequest.getPrice(), bookRequest.getAuthor(), bookRequest.getCurrentQuantity()));
         // set category
         book.addCategory(category);
         // save bookDetails;
@@ -138,9 +142,6 @@ public class BookController {
             BookImage bookImage = bookImageService.saveBookImage(BookImage.builder().imagePath(imagePath).build());
             book.addBookImage(bookImage);
         });
-        // set authors
-        Author author = authorService.saveAuthor(new Author(bookRequest.getAuthor()));
-        book.addAuthor(author);
         // update book;
         bookService.updateBook(book);
         // update shop
@@ -153,9 +154,10 @@ public class BookController {
         Book book = bookService.retrieveById(bookId);
         book.setTitle(bookUpdateRequest.getTitle());
         book.setPrice(bookUpdateRequest.getPrice());
+        book.setAuthor(bookUpdateRequest.getAuthors());
         book.setCurrentQuantity(bookUpdateRequest.getCurrentQuantity());
 
-        if(bookUpdateRequest.getNewImages().size() != 0){
+        if(bookUpdateRequest.getNewImages() != null){
             List<BookImage> bookImages = bookService.retrieveBookImagesByBookId(bookId);
             bookImages.stream().forEach(bookImage -> bookImageService.deleteBookImage(bookImage));
             bookUpdateRequest.getNewImages().stream().forEach(image -> {

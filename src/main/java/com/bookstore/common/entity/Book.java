@@ -31,6 +31,11 @@ public class Book extends Common {
     @Column(name = "price")
     Double price;
 
+    @NotBlank
+    @Length(min = 2)
+    @Column(name = "author")
+    String author;
+
     @NotNull
     @Range(max = 10000, min = 0)
     @Column(name = "current_quantity")
@@ -50,9 +55,10 @@ public class Book extends Common {
         this.soldQuantity = soldQuantity;
     }
 
-    public Book(String title, @NotNull Double price, @NotNull Integer currentQuantity) {
+    public Book(String title, @NotNull Double price, String author, @NotNull Integer currentQuantity) {
         this.title = title;
         this.price = price;
+        this.author = author;
         this.currentQuantity = currentQuantity;
     }
 
@@ -68,12 +74,6 @@ public class Book extends Common {
     }
 
     /* <-------------- Convenience Method ---------------> */
-
-    public void addAuthor(Author author){
-        if(authors == null) authors = new HashSet<>();
-        authors.add(author);
-        author.getBooks().add(this);
-    }
 
     public void addCategory(Category category){
         if(categories == null) categories = new HashSet<>();
@@ -137,15 +137,6 @@ public class Book extends Common {
     joinColumns = @JoinColumn(name = "book_id"),
     inverseJoinColumns = @JoinColumn(name = "category_id"))
     Set<Category> categories;
-
-    /* To BookAuthor */
-    /* Delete Book, Delete Author */
-    @JsonIgnore
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinTable(name = "books_authors",
-    joinColumns = @JoinColumn(name = "book_id"),
-    inverseJoinColumns = @JoinColumn(name = "author_id"))
-    Set<Author> authors;
 
     /* To OrderItem */
     /* Delete Book, Delete Order */

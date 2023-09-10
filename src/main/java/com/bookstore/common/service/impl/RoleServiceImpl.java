@@ -14,11 +14,6 @@ import java.util.Optional;
 public class RoleServiceImpl implements RoleService {
     private final RoleRepository roleRepository;
     @Override
-    public List<Role> retrieveAllRole() {
-        return roleRepository.findAll();
-    }
-
-    @Override
     public Role saveRole(Role role) {
         return roleRepository.save(role);
     }

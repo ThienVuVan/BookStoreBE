@@ -19,9 +19,4 @@ public class ShopDetailsServiceImpl implements ShopDetailsService {
     public ShopDetails updateShopDetails(ShopDetails shopDetails) {
         return shopDetailsRepository.save(shopDetails);
     }
-
-    @Override
-    public void deleteShopDetails(ShopDetails shopDetails) {
-        shopDetailsRepository.delete(shopDetails);
-    }
 }

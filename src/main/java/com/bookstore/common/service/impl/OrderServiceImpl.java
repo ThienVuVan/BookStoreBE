@@ -15,11 +15,6 @@ import java.util.Optional;
 public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     @Override
-    public List<Order> retrieveAllOrder() {
-        return orderRepository.findAll();
-    }
-
-    @Override
     public Order saveOrder(Order order) {
         return orderRepository.save(order);
     }

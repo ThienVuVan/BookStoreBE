@@ -1,6 +1,5 @@
 package com.bookstore.common.repository;
 
-import com.bookstore.common.entity.Author;
 import com.bookstore.common.entity.Book;
 import com.bookstore.common.entity.BookDetails;
 import com.bookstore.common.entity.BookImage;
@@ -15,21 +14,19 @@ public interface BookRepository extends JpaRepository<Book, Integer> {
     Book findByTitle(String title);
     Book findBookById(Integer id);
     List<Book> findBookByShopId(Integer shopId);
-    @Query("select i, b from Book b join fetch b.bookImages i where b.id = :id")
-    List<BookImage> findBookImageByBookId(Integer id);
     @Query("""
-            select b from Book b join fetch b.categories c where 
-            (b.title = :title or :title is null)
-            and (b.price = :price or :price is null)
-            and (c.name = :category or :category is null)
+           SELECT b FROM Book b JOIN FETCH b.categories c WHERE
+           (:title IS NULL OR b.title LIKE CONCAT('%', :title, '%'))
+           AND (:authors IS NULL OR b.author LIKE CONCAT('%', :authors, '%'))
+           AND (:lowPrice IS NULL OR b.price >= :lowPrice)
+           AND (:highPrice IS NULL OR b.price <= :highPrice)
+           AND (:category IS NULL OR c.name = :category)
            """)
-    List<Book> findBookByCondition(String title, Double price, String category);
+    List<Book> findBookByCondition(String title, String authors, Double lowPrice, Double highPrice, String category);
     @Query("select b from BookDetails b where b.book.id = :id")
     BookDetails findBookDetailsByBookId(Integer id);
     @Query("select bimg from BookImage bimg where bimg.book.id = :id")
     List<BookImage> findBookImagesByBookId(Integer id);
-    @Query("select a from Author a join fetch a.books b where b.id = :id")
-    List<Author> findAuthorsByBookId(Integer id);
     @Modifying
     @Transactional
     @Query(value = "delete from books_categories bc where bc.book_id = :bookId", nativeQuery = true)

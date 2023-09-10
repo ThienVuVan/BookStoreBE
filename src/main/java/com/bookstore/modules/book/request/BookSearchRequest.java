@@ -10,12 +10,9 @@ import org.hibernate.validator.constraints.Length;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class BookSearchRequest {
-    @Length(min = 1)
     String title;
-
-    @PositiveOrZero
-    Double price;
-
-    @Length(min = 1)
+    String authors;
+    Double lowPrice;
+    Double highPrice;
     String category;
 }

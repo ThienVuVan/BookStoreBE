@@ -87,7 +87,6 @@ public class ShopController {
         return new ResponseEntity<>(roles,HttpStatus.CREATED);
     }
 
-    // non - test
     @PutMapping(value = {Uri.SHOPS})
     public ResponseEntity<?> UpdateShopForUser(@Valid @ModelAttribute ShopUpdateRequest shopUpdateRequest ){
         // get shop
@@ -129,7 +128,6 @@ public class ShopController {
 
 
     /* <------------------ Uri.SHOPS_DETAILS ------------------> */
-    // non - test
     @GetMapping(value = {Uri.SHOPS_DETAILS})
     public ResponseEntity<?> RetrieveShopDetailForShop(@RequestParam Integer shopId){
         ShopDetailsDto shopDetailsDto = shopModuleService.convertToShopDetailsDto(shopService.retrieveShopDetailsByShopId(shopId));
@@ -148,7 +146,7 @@ public class ShopController {
     }
 
     /* <-------------------- Uri.SHOPS_ORDERS ---------------------> */
-    @GetMapping(value = {Uri.SHOPS_ORDERS})
+    @PostMapping(value = {Uri.SHOPS_ORDERS})
     public ResponseEntity<?> RetrieveOrdersForShop(@RequestParam Integer shopId, @Valid @RequestBody OrderSearchRequest orderSearchRequest) {
         List<OrderDto> orderDtos = orderModuleService.OrderToOrderDto(
                 shopService.retrieveOrdersByCondition(
@@ -158,6 +156,7 @@ public class ShopController {
                         orderSearchRequest.getTotalPrice(),
                         orderSearchRequest.getDeliveryAddress(),
                         orderSearchRequest.getOrderStatus()));
+
         return new ResponseEntity<>(orderDtos, HttpStatus.OK);
     }
 }
