@@ -14,7 +14,6 @@ public class Uri {
     public static final String USERS_SIGNUP = "/api/v1/users/signup";
     public static final String USERS_ORDERS = "/api/v1/users/orders";
     public static final String USERS_REVIEWS = "/api/v1/users/reviews";
-    public static final String USERS_RATES = "/api/v1/users/rates";
 
     /* Book */
     public static final String BOOKS = "/api/v1/books";
@@ -40,7 +39,7 @@ public class Uri {
     public static final String CHILD_CATEGORIES = "/api/v1/categories/children";
     public static final String PARENT_CATEGORIES = "/api/v1/categories/parents";
 
-    /* Author */
-    public static final String AUTHORS = "/api/v1/authors";
+    /* Social Account */
+    public static final String SOCIAL = "/api/v1/social";
 
 }

@@ -72,11 +72,9 @@ public class SecurityConfiguration {
                 .requestMatchers(HttpMethod.GET, Uri.USERS).hasAnyRole("USER", "SHOP", "ADMIN")
                 .requestMatchers(HttpMethod.GET, Uri.SHOPS).hasAnyRole("SHOP", "ADMIN")
                 .requestMatchers("/swagger-ui/**", "/swagger-resources/**", "/v3/api-docs/**").permitAll()
-                .requestMatchers(Uri.USERS_LOGIN, Uri.USERS_SIGNUP).permitAll()
+                .requestMatchers(Uri.USERS_LOGIN, Uri.USERS_SIGNUP, Uri.SOCIAL).permitAll()
                 .anyRequest().authenticated()
         );
-
-
         /* Authentication JWT Filter */
         http.addFilterBefore((new JWTAuthenticationFilter()), UsernamePasswordAuthenticationFilter.class);
 
@@ -86,6 +84,7 @@ public class SecurityConfiguration {
         /* Disable Cross Site Request Forgery */
         http.csrf(request -> request.disable());
 
+        /* Set CORS default */
         http.cors(Customizer.withDefaults());
 
         /* Set StateLess to Session */

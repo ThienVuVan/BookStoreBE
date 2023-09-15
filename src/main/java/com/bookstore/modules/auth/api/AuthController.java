@@ -8,8 +8,7 @@ import com.bookstore.common.security.service.TokenAuthenticationService;
 import com.bookstore.common.security.service.UserDetailsImpl;
 import com.bookstore.common.service.RoleService;
 import com.bookstore.common.service.UserService;
-import com.bookstore.modules.auth.request.LoginRequest;
-import com.bookstore.modules.auth.request.SignupRequest;
+import com.bookstore.modules.auth.request.*;
 import com.bookstore.modules.auth.response.JwtResponse;
 import com.bookstore.modules.auth.response.MessageResponse;
 import jakarta.validation.Valid;
@@ -21,6 +20,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -58,15 +59,9 @@ public class AuthController {
         if(userService.isExistUserName(signupRequest.getUsername())){
             return new ResponseEntity<>(new MessageResponse("UserName is already taken!"), HttpStatus.BAD_REQUEST);
         }
-        if(userService.isExistEmail(signupRequest.getEmail())){
-            return new ResponseEntity<>(new MessageResponse("Email is already taken!"), HttpStatus.BAD_REQUEST);
-        }
-        if(userService.isExistPhoneNumber(signupRequest.getPhoneNumber())){
-            return new ResponseEntity<>(new MessageResponse("PhoneNumber is already taken!"), HttpStatus.BAD_REQUEST);
-        }
 
-        User user = new User(signupRequest.getUsername(), signupRequest.getPhoneNumber(),
-                signupRequest.getEmail(), passwordEncoder.encode(signupRequest.getPassword()));
+        User user = new User(signupRequest.getUsername(), signupRequest.getPhoneNumber(), signupRequest.getEmail(),
+                passwordEncoder.encode(signupRequest.getPassword()), Constant.LOCAL, null);
 
         List<String> strRoles = signupRequest.getRoles();
 
@@ -95,6 +90,52 @@ public class AuthController {
             });
         }
         userService.saveUser(user);
-        return new ResponseEntity<>(new MessageResponse("User registered successfully!"),HttpStatus.CREATED);
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @PostMapping(value = Uri.SOCIAL)
+    public ResponseEntity<?> google(@Valid @RequestBody SocialRequest socialRequest){
+        if(userService.isExistSocialId(socialRequest.getSocialId())){
+           User user = userService.retrieveByUserName(socialRequest.getUsername());
+           List<Role> roles = roleService.retrieveRoleByUserName(socialRequest.getUsername());
+           List<String> listToken = new TokenAuthenticationService().generateToken(user.getUsername());
+           return ResponseEntity.ok(new JwtResponse(
+                   user.getId(),
+                   user.getUsername(),
+                   roles.stream().map(item -> item.getName()).collect(Collectors.toList()),
+                   listToken.get(0),
+                   listToken.get(1)
+           ));
+        }
+        else{
+            if(userService.isExistUserName(socialRequest.getUsername())){
+                return new ResponseEntity<>(new MessageResponse("UserName is already taken!"), HttpStatus.BAD_REQUEST);
+            }
+            User user = null;
+            if(socialRequest.getType() == 0){
+                user = userService.saveUser(
+                        new User(socialRequest.getUsername(), "0000000000", socialRequest.getEmail(),
+                                "00000000", Constant.GOOGLE, socialRequest.getSocialId()));
+            }
+            if(socialRequest.getType() == 1){
+                user = userService.saveUser(
+                        new User(socialRequest.getUsername(), "0000000000", socialRequest.getEmail(),
+                                "00000000", Constant.FACEBOOK, socialRequest.getSocialId()));
+            }
+            // get role set for user;
+            Optional<Role> role = roleService.retrieveByName(Constant.ROLE_USER);
+            user.addRole(role.get());
+            userService.updateUser(user);
+
+            List<Role> roles = roleService.retrieveRoleByUserName(socialRequest.getUsername());
+            List<String> listToken = new TokenAuthenticationService().generateToken(user.getUsername());
+            return ResponseEntity.ok(new JwtResponse(
+                    user.getId(),
+                    user.getUsername(),
+                    roles.stream().map(item -> item.getName()).collect(Collectors.toList()),
+                    listToken.get(0),
+                    listToken.get(1)
+            ));
+        }
     }
 }

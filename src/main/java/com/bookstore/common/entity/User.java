@@ -26,14 +26,12 @@ public class User extends Common {
     @Column(name = "user_name", unique = true)
     String username;
 
-    @NotBlank
     @Phone(message = "must be a well-formed phone number")
-    @Column(name = "phone_number", unique = true)
+    @Column(name = "phone_number")
     String phoneNumber;
 
-    @NotBlank
     @Email
-    @Column(name = "email", unique = true)
+    @Column(name = "email")
     String email;
 
     @NotBlank
@@ -41,13 +39,21 @@ public class User extends Common {
     @Column(name = "password")
     String password;
 
+    @Column(name = "type")
+    String type;
+
+    @Column(name = "social_id")
+    String socialId;
+
     /* <-------------- Method for Entity --------------> */
 
-    public User(String username, String phoneNumber, String email, String password) {
+    public User(String username, String phoneNumber, String email, String password, String type, String socialId) {
         this.username = username;
         this.phoneNumber = phoneNumber;
         this.email = email;
         this.password = password;
+        this.type = type;
+        this.socialId = socialId;
     }
     @Override
     public String toString() {

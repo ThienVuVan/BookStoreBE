@@ -43,7 +43,6 @@ public class UserController {
         return new ResponseEntity<>(userDto, HttpStatus.OK);
     }
 
-    // non - test
     @PutMapping(value = {Uri.USERS})
     public ResponseEntity<Object> UpdateUser(@Valid @RequestBody UserUpdateRequest userUpdateRequest){
         User user = userService.retrieveUserById(userUpdateRequest.getId());
@@ -60,7 +59,6 @@ public class UserController {
         return new ResponseEntity(updateUserResponse, HttpStatus.OK);
     }
 
-    // non - test
     @DeleteMapping(value = {Uri.USERS})
     public ResponseEntity<Object> DeleteUser(@RequestParam Integer userId){
         User user = userService.retrieveUserById(userId);
@@ -70,7 +68,6 @@ public class UserController {
 
     /* <------------------- Uri.USERS_ORDERS ------------------> */
 
-    // non - test
     @GetMapping(value = {Uri.USERS_ORDERS})
     public ResponseEntity<?> RetrieveALlOrdersForUser(@RequestParam Integer userId){
         List<OrderDto> orderDtoList = orderModuleService.OrderToOrderDto(userService.retrieveOrdersByUserId(userId));

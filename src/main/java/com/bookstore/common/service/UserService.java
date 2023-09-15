@@ -12,8 +12,7 @@ public interface UserService {
     public User updateUser(User user);
     public void deleteUser(User user);
     public Boolean isExistUserName(String username);
-    public Boolean isExistEmail(String email);
-    public Boolean isExistPhoneNumber(String phoneNumber);
+    public Boolean isExistSocialId(String socialId);
     public List<Order> retrieveOrdersByUserId(Integer id);
     void deleteRoleForUser(Integer userId, Integer roleId);
 }

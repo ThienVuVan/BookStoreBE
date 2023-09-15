@@ -35,6 +35,4 @@ public class SignupRequest {
     String password;
 
     List<String> roles;
-
-
 }
