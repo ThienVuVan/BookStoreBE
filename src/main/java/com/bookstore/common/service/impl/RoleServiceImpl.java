@@ -13,20 +13,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class RoleServiceImpl implements RoleService {
     private final RoleRepository roleRepository;
-    @Override
-    public Role saveRole(Role role) {
-        return roleRepository.save(role);
-    }
-
-    @Override
-    public Role updateRole(Role role) {
-        return roleRepository.save(role);
-    }
-
-    @Override
-    public void deleteRole(Role role) {
-        roleRepository.delete(role);
-    }
 
     @Override
     public Optional<Role> retrieveByName(String name) {

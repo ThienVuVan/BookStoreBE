@@ -12,24 +12,4 @@ import java.util.List;
 @RequiredArgsConstructor
 public class OrderItemServiceImpl implements OrderItemService{
 
-    private final OrderItemRepository orderItemRepository;
-    @Override
-    public List<OrderItem> retrieveAllOrderItem() {
-        return orderItemRepository.findAll();
-    }
-
-    @Override
-    public OrderItem saveOrderItem(OrderItem orderItem) {
-        return orderItemRepository.save(orderItem);
-    }
-
-    @Override
-    public OrderItem updateOrderItem(OrderItem orderItem) {
-        return orderItemRepository.save(orderItem);
-    }
-
-    @Override
-    public void deleteOrderItem(OrderItem orderItem) {
-        orderItemRepository.delete(orderItem);
-    }
 }

@@ -23,11 +23,6 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public Review updateReview(Review review) {
-        return reviewRepository.save(review);
-    }
-
-    @Override
     public void deleteReview(Review review) {
         reviewRepository.delete(review);
     }

@@ -13,9 +13,5 @@ public interface CategoryRepository extends JpaRepository<Category, Integer> {
     List<Category> findAllParentCategory();
     Category findCategoryByName(String name);
     List<Category> findCategoriesByParentId(Integer parentId);
-    @Query("select c from Category c join fetch c.books b where b.id = :bookId")
-    List<Category> findCategoriesByBooksId(Integer bookId);
-    @Query(value = "delete from books_categories bc where bc.book_id = :bookId", nativeQuery = true)
-    void deleteBookCategoriesByBookId(@Param("bookId") Integer bookId);
     Category findCategoryById(Integer id);
 }

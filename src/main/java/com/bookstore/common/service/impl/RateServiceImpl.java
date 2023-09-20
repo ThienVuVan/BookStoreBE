@@ -12,31 +12,10 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class RateServiceImpl implements RateService {
-
     private final RateRepository rateRepository;
-    @Override
-    public List<Rate> retrieveAllRate() {
-        return rateRepository.findAll();
-    }
-
     @Override
     public Rate saveRate(Rate rate) {
         return rateRepository.save(rate);
-    }
-
-    @Override
-    public Rate updateRate(Rate rate) {
-        return rateRepository.save(rate);
-    }
-
-    @Override
-    public void deleteRate(Rate rate) {
-        rateRepository.delete(rate);
-    }
-
-    @Override
-    public Rate retrieveRateById(UserBookKey id) {
-        return rateRepository.findRateById(id);
     }
 
     @Override

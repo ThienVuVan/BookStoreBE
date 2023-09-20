@@ -17,11 +17,6 @@ import java.util.List;
 public class ShopServiceImpl implements ShopService {
     private final ShopRepository shopRepository;
     @Override
-    public List<Shop> retrieveAllShop() {
-        return shopRepository.findAll();
-    }
-
-    @Override
     public Shop saveShop(Shop shop) {
         return shopRepository.save(shop);
     }
@@ -64,10 +59,5 @@ public class ShopServiceImpl implements ShopService {
     @Override
     public List<Order> retrieveOrdersByCondition(Integer shopId, Integer orderId, LocalDate date, Double totalPrice, String DeliveryAddress, String orderStatus) {
         return shopRepository.findOrdersForShop(shopId, orderId, date, totalPrice, DeliveryAddress, orderStatus);
-    }
-
-    @Override
-    public List<Book> retrieveBooksByCondition(Integer shopId, String title, Double price, Integer currentQuantity, Integer soldQuantity) {
-        return shopRepository.findBooksForShop(shopId, title, price, currentQuantity, soldQuantity);
     }
 }

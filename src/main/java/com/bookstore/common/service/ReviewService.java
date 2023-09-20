@@ -9,7 +9,6 @@ import java.util.List;
 
 public interface ReviewService {
     public Review saveReview(Review review);
-    public Review updateReview(Review review);
     public void deleteReview(Review review);
     public Review retrieveReviewById(Integer id);
     public Page<Review> retrieveReviewsByPage(Integer bookId, Pageable pageable);

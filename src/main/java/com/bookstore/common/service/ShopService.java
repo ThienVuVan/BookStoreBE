@@ -8,7 +8,6 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface ShopService {
-    public List<Shop> retrieveAllShop();
     public Shop saveShop(Shop shop);
     public Shop updateShop(Shop shop);
     public void deleteShop(Shop shop);
@@ -19,6 +18,5 @@ public interface ShopService {
     public ShopDetails retrieveShopDetailsByShopId(Integer id);
     public List<Order> retrieveOrdersByCondition(Integer shopId, Integer orderId, LocalDate date,
                                                  Double totalPrice, String DeliveryAddress, String orderStatus);
-    public List<Book> retrieveBooksByCondition(Integer shopId, String title, Double price, Integer currentQuantity, Integer soldQuantity);
 
 }
