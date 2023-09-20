@@ -32,6 +32,13 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
                 || requestURI.startsWith("/v3/api-docs")
                 || requestURI.startsWith(Uri.USERS_LOGIN)
                 || requestURI.startsWith(Uri.USERS_SIGNUP)
-                || requestURI.startsWith(Uri.SOCIAL);
+                || requestURI.startsWith(Uri.SOCIAL)
+                || requestURI.startsWith(Uri.BOOKS_PAGE)
+                || requestURI.startsWith(Uri.BOOKS_FILTER)
+                || requestURI.startsWith(Uri.BOOKS_DETAILS)
+                || requestURI.startsWith(Uri.BOOKS_REVIEWS)
+                || requestURI.startsWith(Uri.BOOKS_RATES)
+                || requestURI.startsWith(Uri.CATEGORIES)
+                || requestURI.startsWith(Uri.SHOPS_BOOK_ID);
     }
 }

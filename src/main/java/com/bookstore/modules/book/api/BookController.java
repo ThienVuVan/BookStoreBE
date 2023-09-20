@@ -35,7 +35,7 @@ public class BookController {
 
     @GetMapping(value = {Uri.BOOKS_PAGE})
     public ResponseEntity<?> RetrieveBooksByPage(@RequestParam Integer page){
-        Pageable pageRequest = PageRequest.of(page, 8);
+        Pageable pageRequest = PageRequest.of(page, 12);
         List<BookDto> bookDtos = bookModuleService.convertPageToListBookDto(
                 bookService.retrieveBooksByPage(pageRequest));
         bookDtos.stream().forEach(bookDto -> {

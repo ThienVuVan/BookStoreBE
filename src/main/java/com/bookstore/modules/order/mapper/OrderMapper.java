@@ -10,5 +10,5 @@ import java.util.List;
 @Component
 @Mapper(componentModel = "spring")
 public interface OrderMapper {
-    List<OrderDto> OrderToOrderDto(List<Order> orders);
+    OrderDto OrderToOrderDto(Order order);
 }

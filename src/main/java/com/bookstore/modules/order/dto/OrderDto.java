@@ -16,4 +16,6 @@ public class OrderDto {
     Double totalPrice;
     String DeliveryAddress;
     String orderStatus;
+    Boolean isConfirm;
+    Boolean isEvaluate;
 }

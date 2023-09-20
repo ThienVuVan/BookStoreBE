@@ -11,4 +11,5 @@ public interface CategoryService {
     public Category retrieveByCategoryName(String name);
     public List<Category> retrieveCategoriesByParentId(Integer parentId);
     Category retrieveById(Integer id);
+    List<Category> retrieveAllCategories();
 }

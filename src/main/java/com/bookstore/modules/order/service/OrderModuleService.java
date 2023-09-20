@@ -18,9 +18,7 @@ public class OrderModuleService {
     public final OrderMapper orderMapper;
     public final OrderItemMapper orderItemMapper;
     public List<OrderDto> OrderToOrderDto(List<Order> orders){
-        return orderMapper.OrderToOrderDto(orders);
+        return orders.stream().map((order) -> orderMapper.OrderToOrderDto(order)).collect(Collectors.toList());
     }
-    public List<OrderItemDto> convertToListOrderItem(List<OrderItem> orderItems){
-        return orderItems.stream().map(orderItem -> orderItemMapper.OrderItemToDto(orderItem)).collect(Collectors.toList());
-    }
+
 }

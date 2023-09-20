@@ -43,6 +43,14 @@ public class Order extends Common {
     @Column(name = "order_status")
     String orderStatus;
 
+    @NotNull
+    @Column(name = "is_confirm")
+    Boolean isConfirm;
+
+    @NotNull
+    @Column(name = "is_evaluate")
+    Boolean isEvaluate;
+
     /* <---------- Entity Method -----------> */
 
     public Order(LocalDate date, Double totalPrice, String deliveryAddress, String orderStatus) {
@@ -50,6 +58,8 @@ public class Order extends Common {
         this.totalPrice = totalPrice;
         DeliveryAddress = deliveryAddress;
         this.orderStatus = orderStatus;
+        this.isConfirm = false;
+        this.isEvaluate = false;
     }
 
     /* <---------------------- Convenience Method ---------------------> */

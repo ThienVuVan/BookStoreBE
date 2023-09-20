@@ -4,10 +4,7 @@ import com.bookstore.common.entity.*;
 import com.bookstore.common.entity.compositekey.UserBookKey;
 import com.bookstore.common.enums.Uri;
 import com.bookstore.common.security.service.TokenAuthenticationService;
-import com.bookstore.common.service.BookService;
-import com.bookstore.common.service.RateService;
-import com.bookstore.common.service.ReviewService;
-import com.bookstore.common.service.UserService;
+import com.bookstore.common.service.*;
 import com.bookstore.modules.order.dto.OrderDto;
 import com.bookstore.modules.order.service.OrderModuleService;
 import com.bookstore.modules.user.dto.UserDto;
@@ -32,6 +29,7 @@ public class UserController {
     private final BookService bookService;
     private final ReviewService reviewService;
     private final RateService rateService;
+    private final OrderService orderService;
     private final UserModuleService userModuleService;
     private final OrderModuleService orderModuleService;
 
@@ -100,6 +98,10 @@ public class UserController {
         UserBookKey userBookKey = new UserBookKey(user.getId(), book.getId());
         Rate rate = new Rate(userBookKey, user, book, reviewCreateRequest.getRate());
         rateService.saveRate(rate);
+        // get order
+        Order order = orderService.retrieveById(reviewCreateRequest.getOrderId());
+        order.setIsEvaluate(true);
+        orderService.updateOrder(order);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 

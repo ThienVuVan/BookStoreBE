@@ -52,7 +52,7 @@ public class Book extends Common {
         this.title = title;
         this.price = price;
         this.currentQuantity = currentQuantity;
-        this.soldQuantity = soldQuantity;
+        this.soldQuantity = 0;
     }
 
     public Book(String title, @NotNull Double price, String author, @NotNull Integer currentQuantity) {
@@ -60,6 +60,7 @@ public class Book extends Common {
         this.price = price;
         this.author = author;
         this.currentQuantity = currentQuantity;
+        this.soldQuantity = 0;
     }
 
     @Override

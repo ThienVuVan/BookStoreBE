@@ -14,6 +14,8 @@ import org.springframework.web.multipart.MultipartFile;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ReviewRateCreateRequest {
     @NotNull
+    Integer orderId;
+    @NotNull
     Integer userId;
     @NotNull
     Integer bookId;

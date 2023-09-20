@@ -44,4 +44,9 @@ public class CategoryServiceImpl implements CategoryService {
     public Category retrieveById(Integer id) {
         return categoryRepository.findCategoryById(id);
     }
+
+    @Override
+    public List<Category> retrieveAllCategories() {
+        return categoryRepository.findAll();
+    }
 }

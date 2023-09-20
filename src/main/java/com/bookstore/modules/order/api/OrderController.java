@@ -39,6 +39,8 @@ public class OrderController {
                 .totalPrice(orderRequest.getTotalPrice())
                 .DeliveryAddress(orderRequest.getAddress())
                 .orderStatus(OrderStatus.ORDER_PLACEMENT)
+                .isConfirm(false)
+                .isEvaluate(false)
                 .build());
         User user = userService.retrieveUserById(orderRequest.getUserId());
         Shop shop = shopService.retrieveShopById(orderRequest.getShopId());
@@ -62,6 +64,7 @@ public class OrderController {
     @DeleteMapping(value = {Uri.ORDERS})
     public ResponseEntity<?> DeleteOrder(@RequestParam Integer orderId){
         Order order = orderService.retrieveById(orderId);
+        // check them dieu kien
         orderService.deleteOrder(order);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -69,5 +72,18 @@ public class OrderController {
     public ResponseEntity<?> RetrieveAllOrderItemsForOrder(@RequestParam Integer orderId){
         List<OrderItem> orderItems = orderService.retrieveOrderItemsByOrderId(orderId);
         return new ResponseEntity<>(orderItems, HttpStatus.OK);
+    }
+
+    @PutMapping(value = {Uri.ORDERS_CONFIRM})
+    public ResponseEntity<?> ConfirmOrderSuccess(@RequestParam Integer orderId){
+        List<OrderItem> orderItems = orderService.retrieveOrderItemsByOrderId(orderId);
+        orderItems.stream().forEach(orderItem -> {
+            Book book = orderItem.getBook();
+            book.setSoldQuantity(book.getSoldQuantity() + 1);
+        });
+        Order order = orderService.retrieveById(orderId);
+        order.setIsConfirm(true);
+        orderService.updateOrder(order);
+        return new ResponseEntity(HttpStatus.OK);
     }
 }

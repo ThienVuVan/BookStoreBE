@@ -73,6 +73,9 @@ public class SecurityConfiguration {
                 .requestMatchers(HttpMethod.GET, Uri.SHOPS).hasAnyRole("SHOP", "ADMIN")
                 .requestMatchers("/swagger-ui/**", "/swagger-resources/**", "/v3/api-docs/**").permitAll()
                 .requestMatchers(Uri.USERS_LOGIN, Uri.USERS_SIGNUP, Uri.SOCIAL).permitAll()
+                .requestMatchers(Uri.BOOKS_PAGE, Uri.BOOKS_FILTER, Uri.BOOKS_DETAILS, Uri.BOOKS_REVIEWS, Uri.BOOKS_RATES).permitAll()
+                .requestMatchers(HttpMethod.GET, Uri.CATEGORIES).permitAll()
+                .requestMatchers(Uri.SHOPS_BOOK_ID).permitAll()
                 .anyRequest().authenticated()
         );
         /* Authentication JWT Filter */

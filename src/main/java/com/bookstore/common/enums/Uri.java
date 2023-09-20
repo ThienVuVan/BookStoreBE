@@ -26,6 +26,7 @@ public class Uri {
 
     /* Shop */
     public static final String SHOPS = "/api/v1/shops";
+    public static final String SHOPS_BOOK_ID = "/api/v1/shops/bookId";
     public static final String SHOPS_BOOK = "/api/v1/shops/books";
     public static final String SHOPS_DETAILS = "/api/v1/shops/details";
     public static final String SHOPS_ORDERS = "/api/v1/shops/orders";
@@ -33,11 +34,10 @@ public class Uri {
     /* Order */
     public static final String ORDERS = "/api/v1/orders";
     public static final String ORDERS_ORDER_ITEMS = "/api/v1/orders/items";
+    public static final String ORDERS_CONFIRM = "/api/v1/orders/confirm";
 
     /* Category */
     public static final String CATEGORIES = "/api/v1/categories";
-    public static final String CHILD_CATEGORIES = "/api/v1/categories/children";
-    public static final String PARENT_CATEGORIES = "/api/v1/categories/parents";
 
     /* Social Account */
     public static final String SOCIAL = "/api/v1/social";

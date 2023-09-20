@@ -94,7 +94,7 @@ public class AuthController {
     }
 
     @PostMapping(value = Uri.SOCIAL)
-    public ResponseEntity<?> google(@Valid @RequestBody SocialRequest socialRequest){
+    public ResponseEntity<?> SocialSignIn(@Valid @RequestBody SocialRequest socialRequest){
         if(userService.isExistSocialId(socialRequest.getSocialId())){
            User user = userService.retrieveByUserName(socialRequest.getUsername());
            List<Role> roles = roleService.retrieveRoleByUserName(socialRequest.getUsername());
