@@ -89,10 +89,13 @@ public class BookController {
     @GetMapping(value = {Uri.BOOKS_SHOP})
     public ResponseEntity<?> RetrieveBookByShopId(@RequestParam Integer shopId){
         List<BookDto> bookDtos = bookModuleService.convertToListBookDto(bookService.retrieveBookByShopId(shopId));
+        bookDtos.stream().forEach(bookDto -> {
+            String imagePath = bookService.retrieveBookImagesByBookId(bookDto.getId()).get(0).getImagePath();
+            bookDto.setImagePath(imagePath);
+        });
         return new ResponseEntity<>(bookDtos, HttpStatus.OK);
     }
 
-    // change - need to update author
     @PostMapping(value = {Uri.BOOKS_FILTER})
     public ResponseEntity<?> RetrieveBookByCondition(@Valid @RequestBody BookSearchRequest bookSearchRequest){
         List<BookDto> bookDtos = bookModuleService.convertToListBookDto(

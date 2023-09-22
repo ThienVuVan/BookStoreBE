@@ -68,14 +68,16 @@ public class SecurityConfiguration {
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         /* Authorization Request */
+        /* Update role for request later */
         http.authorizeHttpRequests(request -> request
                 .requestMatchers(HttpMethod.GET, Uri.USERS).hasAnyRole("USER", "SHOP", "ADMIN")
                 .requestMatchers(HttpMethod.GET, Uri.SHOPS).hasAnyRole("SHOP", "ADMIN")
                 .requestMatchers("/swagger-ui/**", "/swagger-resources/**", "/v3/api-docs/**").permitAll()
                 .requestMatchers(Uri.USERS_LOGIN, Uri.USERS_SIGNUP, Uri.SOCIAL).permitAll()
-                .requestMatchers(Uri.BOOKS_PAGE, Uri.BOOKS_FILTER, Uri.BOOKS_DETAILS, Uri.BOOKS_REVIEWS, Uri.BOOKS_RATES).permitAll()
+                .requestMatchers(Uri.BOOKS_PAGE, Uri.BOOKS_FILTER, Uri.BOOKS_DETAILS,
+                        Uri.BOOKS_REVIEWS, Uri.BOOKS_RATES, Uri.BOOKS_SHOP).permitAll()
                 .requestMatchers(HttpMethod.GET, Uri.CATEGORIES).permitAll()
-                .requestMatchers(Uri.SHOPS_BOOK_ID).permitAll()
+                .requestMatchers(Uri.SHOPS_BOOK_ID, Uri.SHOPS_ID).permitAll()
                 .anyRequest().authenticated()
         );
         /* Authentication JWT Filter */

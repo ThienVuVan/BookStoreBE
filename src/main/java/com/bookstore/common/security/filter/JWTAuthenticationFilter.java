@@ -38,7 +38,9 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
                 || requestURI.startsWith(Uri.BOOKS_DETAILS)
                 || requestURI.startsWith(Uri.BOOKS_REVIEWS)
                 || requestURI.startsWith(Uri.BOOKS_RATES)
+                || requestURI.startsWith(Uri.BOOKS_SHOP)
                 || requestURI.startsWith(Uri.CATEGORIES)
-                || requestURI.startsWith(Uri.SHOPS_BOOK_ID);
+                || requestURI.startsWith(Uri.SHOPS_BOOK_ID)
+                || requestURI.startsWith(Uri.SHOPS_ID);
     }
 }

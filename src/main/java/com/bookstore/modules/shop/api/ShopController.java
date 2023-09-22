@@ -36,7 +36,11 @@ public class ShopController {
     private final ShopModuleService shopModuleService;
     private final OrderModuleService orderModuleService;
     private final RoleService roleService;
-
+    @GetMapping(value = {Uri.SHOPS_ID})
+    public ResponseEntity<?> RetrieveShopById(@RequestParam Integer shopId){
+        ShopDto shopDto = shopModuleService.convertToShopDto(shopService.retrieveShopById(shopId));
+        return new ResponseEntity<>(shopDto, HttpStatus.OK);
+    }
     @GetMapping(value = {Uri.SHOPS})
     public ResponseEntity<?> RetrieveShopByUserId(@RequestParam Integer userId){
         ShopDto shop = shopModuleService.convertToShopDto(shopService.retrieveShopByUserId(userId));

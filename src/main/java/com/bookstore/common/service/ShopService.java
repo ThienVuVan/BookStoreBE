@@ -14,7 +14,6 @@ public interface ShopService {
     public Shop retrieveShopById(Integer id);
     public Shop retrieveShopByUserId(Integer id);
     public Shop retrieveShopByBookId(Integer bookId);
-    public Shop retrieveShopByShopName(String name);
     public ShopDetails retrieveShopDetailsByShopId(Integer id);
     public List<Order> retrieveOrdersByCondition(Integer shopId, Integer orderId, LocalDate date,
                                                  Double totalPrice, String DeliveryAddress, String orderStatus);

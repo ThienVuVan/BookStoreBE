@@ -26,6 +26,7 @@ public class Uri {
 
     /* Shop */
     public static final String SHOPS = "/api/v1/shops";
+    public static final String SHOPS_ID = "/api/v1/shops/id";
     public static final String SHOPS_BOOK_ID = "/api/v1/shops/bookId";
     public static final String SHOPS_BOOK = "/api/v1/shops/books";
     public static final String SHOPS_DETAILS = "/api/v1/shops/details";
