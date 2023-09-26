@@ -57,7 +57,8 @@ public class ShopController {
     public ResponseEntity<?> CreateShopForUser(@Valid @ModelAttribute ShopRequest shopRequest){
         // set sh
         String fileName = "image_" + System.currentTimeMillis() + shopRequest.getShopLogo().getOriginalFilename();
-        String imagePath = "D:/Projects/BookStoreFE/public/images/" + fileName;
+//        String imagePath = "D:/Projects/BookStoreFE/public/images/" + fileName;
+        String imagePath = "/var/www/bookstore/html/images/" + fileName;
         try {
             shopRequest.getShopLogo().transferTo(new File(imagePath));
         } catch (IOException e) {
@@ -102,7 +103,8 @@ public class ShopController {
         Shop shop = shopService.retrieveShopByUserId(shopUpdateRequest.getUserId());
         if(shopUpdateRequest.getShopLogo() != null){
             String fileName = "image_" + System.currentTimeMillis() + shopUpdateRequest.getShopLogo().getOriginalFilename();
-            String imagePath = "D:/Projects/BookStoreFE/public/images/" + fileName;
+//            String imagePath = "D:/Projects/BookStoreFE/public/images/" + fileName;
+            String imagePath = "/var/www/bookstore/html/images/" + fileName;
             try {
                 shopUpdateRequest.getShopLogo().transferTo(new File(imagePath));
             } catch (IOException e) {

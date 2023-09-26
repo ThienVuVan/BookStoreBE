@@ -136,7 +136,8 @@ public class BookController {
         // set images
         bookRequest.getImages().stream().forEach(image -> {
             String fileName = "image_" + System.currentTimeMillis() + image.getOriginalFilename();
-            String imagePath = "D:/Projects/BookStoreFE/public/images/" + fileName;
+//            String imagePath = "D:/Projects/BookStoreFE/public/images/" + fileName;
+            String imagePath = "/var/www/bookstore/html/images/" + fileName;
             try {
                 image.transferTo(new File(imagePath));
             } catch (IOException e) {
@@ -165,7 +166,8 @@ public class BookController {
             bookImages.stream().forEach(bookImage -> bookImageService.deleteBookImage(bookImage));
             bookUpdateRequest.getNewImages().stream().forEach(image -> {
                 String fileName = "image_" + System.currentTimeMillis() + image.getOriginalFilename();
-                String imagePath = "D:/Projects/BookStoreFE/public/images/" + fileName;
+//                String imagePath = "D:/Projects/BookStoreFE/public/images/" + fileName;
+                String imagePath = "/var/www/bookstore/html/images/" + fileName;
                 try {
                     image.transferTo(new File(imagePath));
                 } catch (IOException e) {
